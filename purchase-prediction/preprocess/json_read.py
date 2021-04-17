@@ -1,6 +1,6 @@
 """
-    Name:
-    Purpose:
+    Name:       json_ready.py
+    Purpose:    JSON data preprosessing.
 
     @author Bartosz Świtalski, Piotr Frątczak
 
@@ -143,6 +143,9 @@ def sessions_check():
     print('{offered_discount}')
     df_s['offered_discount'] = df_s['offered_discount'].astype(int)
     check_if_numeric(df_s, 'offered_discount')
+
+    print('{examine sessions}')
+    count_sessions_by_purchase(df_s)
 
 
 def check_unique_values(df, cols):
@@ -310,6 +313,29 @@ def valid_timestamp(timestamp_str):
         return False
 
 
+def count_sessions_by_purchase(df):
+    print('------examine sessions')
+    buy_sessions = 0
+    view_sessions = -1
+
+    current_session_id = -1
+    finished_with_purchase = 0
+    for index, row in df.iterrows():
+        if current_session_id != row['session_id']:
+            buy_sessions += finished_with_purchase
+            view_sessions += 1 - finished_with_purchase
+
+            current_session_id = row['session_id']
+            finished_with_purchase = 0
+
+        if row['event_type'] == 'BUY_PRODUCT':
+            finished_with_purchase = 1
+
+    print('Number of sessions with a purchase: {:>10}'.format(buy_sessions))
+    print('Number of sessions without a purchase: {:>7}'.format(view_sessions))
+    print('{}% of sessions end with a purchase.'.format(buy_sessions/(buy_sessions + view_sessions)*100))
+    
+    
 def check_plot(df):
     print('---plot')
     cols = df.columns
