@@ -33,15 +33,15 @@ def products_check():
 
     """
     Check if:
-    1) id is integer (and is not null)
+    1) id is an integer (and is not null)
     2) id is unique
     3) id is in good range of values
 
     4) product name is not null
-    5) product name is valid string
+    5) product name is a valid string
     
     6) category path is not null
-    7) category path is valid string(semicolon separated)
+    7) category path is a valid string(semicolon separated)
     
     8) price is not null
     9) price is in valid range
@@ -60,10 +60,13 @@ def products_check():
     print('\n{category_path}')
     check_if_string(df, 'category_path')
     check_if_empty(df, 'category_path')
+    group_attributes(df, 'category_path')
 
     print('\n{price}')
     check_if_float(df, 'price')
     check_range(df, 0, 10000, 'price')
+    print('--invalid price elements')
+    print(df[(df.price > 1000) | (df.price < 0)])
 
     # check_plot(df)
 
@@ -74,7 +77,7 @@ def users_check():
 
     """
     Check if:
-    1) id is integer (and is not null)
+    1) id is an integer (and is not null)
     2) id is unique
     3) id is in good range of values
     """
@@ -101,7 +104,7 @@ def sessions_check():
     
     2) timestamp is of valid format (and not null)
     
-    3) user_id is valid integer (and is not null)
+    3) user_id is a valid integer (and is not null)
     3a) {user_id} exists in users.jsonl
     
     4) product_id is not null
@@ -109,7 +112,7 @@ def sessions_check():
     
     5) session_type is of valid format
     
-    6) offered discount is valid integer (and is not null)
+    6) offered discount is a valid integer (and is not null)
     
     7) {user_id} exists in users.jsonl
     """
@@ -143,6 +146,7 @@ def sessions_check():
     print('{offered_discount}')
     df_s['offered_discount'] = df_s['offered_discount'].astype(int)
     check_if_numeric(df_s, 'offered_discount')
+    check_range(df_s, 0, 100, 'offered_discount')
 
     print('{examine sessions}')
     count_sessions_by_purchase(df_s)
@@ -190,6 +194,10 @@ def check_for_nulls(df, col_name):
 def check_nulls_overall(df):
     print('------checking nulls overall')
     print(df.isnull().sum())
+    print(df[df['product_id'].isnull()])
+    # df.to_csv('product_id_nulls.csv')
+    print(df[df['user_id'].isnull()])
+    # df.to_csv('user_id_nulls.csv')
     print('---done checking nulls overall')
 
 
@@ -334,8 +342,19 @@ def count_sessions_by_purchase(df):
     print('Number of sessions with a purchase: {:>10}'.format(buy_sessions))
     print('Number of sessions without a purchase: {:>7}'.format(view_sessions))
     print('{}% of sessions end with a purchase.'.format(buy_sessions/(buy_sessions + view_sessions)*100))
-    
-    
+
+
+def group_attributes(df, col_name):
+    print('------group attributes')
+    attributes = []
+    for index, row in df.iterrows():
+        if row[col_name] not in attributes:
+            attributes.append(row[col_name])
+    print('Number of {}s: {}'.format(col_name, attributes.count))
+    print('Attributes:')
+    print(*attributes, sep='\n')
+
+
 def check_plot(df):
     print('---plot')
     cols = df.columns
