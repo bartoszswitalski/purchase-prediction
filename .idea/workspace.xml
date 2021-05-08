@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2059fd00-8a97-4b69-ba77-7cf756bdedb4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/purchase-prediction/preprocess/check_dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/purchase-prediction/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/purchase-prediction/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/purchase-prediction/preprocess/json_read.py" beforeDir="false" afterPath="$PROJECT_DIR$/purchase-prediction/preprocess/json_read.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/purchase-prediction/preprocess/check_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/purchase-prediction/preprocess/check_dataset.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +94,7 @@
       <workItem from="1619100832779" duration="3074000" />
       <workItem from="1619108143719" duration="26000" />
       <workItem from="1619512181499" duration="1903000" />
-      <workItem from="1620477654325" duration="69000" />
+      <workItem from="1620477654325" duration="324000" />
     </task>
     <servers />
   </component>
@@ -116,6 +114,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/purchase_prediction$main.coverage" NAME="main Coverage Results" MODIFIED="1619512206750" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/purchase-prediction" />
+    <SUITE FILE_PATH="coverage/purchase_prediction$main.coverage" NAME="main Coverage Results" MODIFIED="1620477773546" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/purchase-prediction" />
   </component>
 </project>
