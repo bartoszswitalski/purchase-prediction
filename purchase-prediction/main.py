@@ -7,9 +7,9 @@
     Warsaw University of Technology
     Faculty of Electronics and Information Technology
 """
-from preprocess.json_read import *
+from preprocess.check_dataset import *
 
 if __name__ == '__main__':
-    # products_check()
-    # users_check()
+    users_check()
+    products_check()
     sessions_check()
