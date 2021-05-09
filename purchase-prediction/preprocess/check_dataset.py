@@ -329,9 +329,27 @@ def session_mutual_info(df):
     display_mutual_info(df, 'product_id', cols_b)
 
 
-def mutual_info_score(df1, df2):
-    crosstab = pd.crosstab(df1, df2, margins=False)
+def mutual_info_score(df, col1, col2):
+    crosstab = pd.crosstab(df[col1], df[col2], margins=False)
     return metrics.mutual_info_score(None, None, contingency=crosstab)
+
+
+def mutual_info_score_with_noise(df, col1, col2, evaluations=100):
+    mi = mutual_info_score(df, col1, col2)
+
+    df_shuffled = df.copy()
+    to_drop = df_shuffled.columns.tolist()
+    to_drop.remove(col1)
+    to_drop.remove(col2)
+    df_shuffled.drop(to_drop, axis=1, inplace=True)
+
+    np.random.seed(SEED)
+    noise_mi = 0
+    for i in range(evaluations):
+        df_shuffled[col2] = np.random.permutation(df[col2].values)
+        noise_mi += mutual_info_score(df_shuffled, col1, col2)
+
+    return mi, noise_mi/evaluations
 
 
 def display_mutual_info(df, column_name, all_column_names):
@@ -340,12 +358,15 @@ def display_mutual_info(df, column_name, all_column_names):
     all_column_names.append('checkMCAR')
 
     mis = []
+    noises = []
     for col in all_column_names[1:]:
-        mis.append(mutual_info_score(df_aux[col], df_aux[column_name]))
-    df_heatmap = pd.DataFrame({column_name: mis}, index=all_column_names[1:])
+        mi, noise_mi = mutual_info_score_with_noise(df_aux, col, column_name)
+        mis.append(mi)
+        noises.append(noise_mi)
+    df_heatmap = pd.DataFrame({column_name: mis, 'noise': noises}, index=all_column_names[1:])
 
     plt.subplots(figsize=(8, 6))
-    display(sns.heatmap(df_heatmap, annot=True))
+    sns.heatmap(df_heatmap, annot=True)
     plt.savefig("output/sessions_mutual_info_{}.jpg".format(column_name))
     print('saved to output')
 
@@ -363,16 +384,7 @@ def products_mutual_info(df):
     df_a['price'] = np.where(df_a['price'] >= 10 ** 4, 1, df_a['price'])
     df_a['price'] = df_a['price'].astype(int)
 
-    mi = mutual_info_score(df_a['category_path'], df_a['price'])
+    mi, noise_mi = mutual_info_score_with_noise(df_a, 'category_path', 'price')
 
     print('out-of-range price and category_path mutual information score: {:.4f}'.format(mi))
-
-    df_shuffled = df_a.copy()
-    np.random.seed(SEED)
-    noise_mi = 0
-    evaluations = 100
-    for i in range(evaluations):
-        df_shuffled.apply(np.random.shuffle)
-        noise_mi += mutual_info_score(df_shuffled['category_path'], df_shuffled['price'])
-
-    print('mutual information score noise: {:>37.4f}'.format(noise_mi / evaluations))
+    print('mutual information score noise: {:>37.4f}'.format(noise_mi))
