@@ -140,4 +140,4 @@ dmypy.json
 cython_debug/
 
 # output
-purchase-prediction/output/
+purchase-prediction/output/*

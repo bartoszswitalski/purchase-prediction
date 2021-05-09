@@ -9,13 +9,16 @@
 """
 from preprocess.json_read import *
 
+import datetime
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from pandas.core.dtypes.common import is_numeric_dtype, is_string_dtype
-import datetime
 from IPython.display import display
+from sklearn import metrics
+
+SEED = 87342597
 
 
 def users_check():
@@ -77,7 +80,7 @@ def products_check():
     check_range(df, 0, 10 ** 4, 'price')
     check_plot(df, 'price')
 
-    products_corr(df)
+    products_mutual_info(df)
 
     df = delete_invalid_price(df)
     df = df.drop(['product_name'], axis=1)
@@ -134,7 +137,7 @@ def sessions_check():
     check_if_numeric(df_s, 'offered_discount')
     check_range(df_s, 0, 100, 'offered_discount')
 
-    session_corr(df_s)
+    session_mutual_info(df_s)
 
     # after checking if missing data is MCAR
     print('\nClean missing data')
@@ -316,52 +319,60 @@ def check_plot(df, column_name):
     print('saved to output')
 
 
-def session_corr(df):
-    print('{sessions user_id correlations}')
-    df_a = df[['product_id', 'event_type', 'offered_discount']].copy()
-    display_corr(df, df_a, 'user_id')
+def session_mutual_info(df):
+    print('{sessions user_id mutual information scores}')
+    cols_a = ['user_id', 'product_id', 'event_type', 'offered_discount']
+    display_mutual_info(df, 'user_id', cols_a)
 
-    print('{sessions product_id correlations}')
-    df_b = df[['user_id', 'event_type', 'offered_discount']].copy()
-    display_corr(df, df_b, 'product_id')
+    print('{sessions product_id mutual information scores}')
+    cols_b = ['product_id', 'user_id', 'event_type', 'offered_discount']
+    display_mutual_info(df, 'product_id', cols_b)
 
 
-def display_corr(df, df_aux, column_name):
+def mutual_info_score(df1, df2):
+    crosstab = pd.crosstab(df1, df2, margins=False)
+    return metrics.mutual_info_score(None, None, contingency=crosstab)
+
+
+def display_mutual_info(df, column_name, all_column_names):
+    df_aux = df[all_column_names].copy()
     df_aux = df_aux.assign(checkMCAR=np.where(df[column_name].isnull(), 1, 0))
-    df_aux['event_type'] = np.where((df_aux.event_type == 'BUY_PRODUCT'), 1, df_aux.event_type)
-    df_aux['event_type'] = np.where((df_aux.event_type == 'VIEW_PRODUCT'), 0, df_aux.event_type)
-    df_aux['event_type'] = pd.to_numeric(df_aux['event_type'])
+    all_column_names.append('checkMCAR')
 
-    corr_a = df_aux.corr('pearson')
+    mis = []
+    for col in all_column_names[1:]:
+        mis.append(mutual_info_score(df_aux[col], df_aux[column_name]))
+    df_heatmap = pd.DataFrame({column_name: mis}, index=all_column_names[1:])
 
-    display(corr_a.style.background_gradient(cmap='coolwarm').set_precision(3))
+    plt.subplots(figsize=(8, 6))
+    display(sns.heatmap(df_heatmap, annot=True))
+    plt.savefig("output/sessions_mutual_info_{}.jpg".format(column_name))
+    print('saved to output')
 
 
-def products_corr(df):
-    print('{price correlations}')
+def products_mutual_info(df):
+    print('{price mutual information}')
 
     df_a = df.copy()
+
+    df_a.drop(['product_name'], axis=1, inplace=True)
+    df_a.drop(['product_id'], axis=1, inplace=True)
 
     df_a['price'] = np.where((df_a['price'] < 10 ** 4) & (df_a['price'] > 0), 0, df_a['price'])
     df_a['price'] = np.where(df_a['price'] < 0, 1, df_a['price'])
     df_a['price'] = np.where(df_a['price'] >= 10 ** 4, 1, df_a['price'])
+    df_a['price'] = df_a['price'].astype(int)
 
-    df_a = pd.concat([df_a, pd.get_dummies(df_a['category_path'])], axis=1)
-    df_a.drop(['category_path'], axis=1, inplace=True)
-    df_a.drop(['product_name'], axis=1, inplace=True)
+    mi = mutual_info_score(df_a['category_path'], df_a['price'])
 
-    df_a.columns = ['product_id', 'price', 'cat #0', 'cat #1', 'cat #2', 'cat #3', 'cat #4', 'cat #5', 'cat #6',
-                    'cat #7', 'cat #8', 'cat #9', 'cat #10', 'cat #11', 'cat #12', 'cat #13', 'cat #14']
+    print('out-of-range price and category_path mutual information score: {:.4f}'.format(mi))
 
-    corr = df_a.corr()
+    df_shuffled = df_a.copy()
+    np.random.seed(SEED)
+    noise_mi = 0
+    evaluations = 100
+    for i in range(evaluations):
+        df_shuffled.apply(np.random.shuffle)
+        noise_mi += mutual_info_score(df_shuffled['category_path'], df_shuffled['price'])
 
-    plt.subplots(figsize=(8, 6))
-    plt.yscale('linear')
-
-    sns_graph = sns.heatmap(corr,
-                            xticklabels=corr.columns.values,
-                            yticklabels=corr.columns.values)
-
-    plt.savefig("output/products_jsonl_corr.jpg")
-    print('saved to output')
-
+    print('mutual information score noise: {:>37.4f}'.format(noise_mi / evaluations))
