@@ -21,6 +21,24 @@ from sklearn import metrics
 SEED = 87342597
 
 
+def calculate_input_target_mi():
+    df_u = pd.read_csv('output/users.csv',sep=';')
+    df_p = pd.read_csv('output/products.csv',sep=';')
+    df_s = pd.read_csv('output/sessions.csv',sep=';')
+
+    is_buy_values = df_s['event_type'].values
+    df_s.drop(['event_type'], axis=1, inplace=True)
+    target_variable = 'is_buy'
+
+    # df_u.insert(0, target_variable, is_buy_values)
+    # df_p.insert(0, target_variable, is_buy_values)
+    df_s.insert(0, target_variable, is_buy_values)
+
+    # display_mutual_info(df_u, target_variable, df_u.columns, 'users_to_target')
+    # display_mutual_info(df_p, target_variable, df_p.columns, 'products_to_target')
+    display_mutual_info(df_s, target_variable, df_s.columns, 'sessions_to_target')
+
+
 def users_check():
     df = pd.DataFrame(get_jsonl_data('users.jsonl'))
     """
@@ -322,11 +340,11 @@ def check_plot(df, column_name):
 def session_mutual_info(df):
     print('{sessions user_id mutual information scores}')
     cols_a = ['user_id', 'product_id', 'event_type', 'offered_discount']
-    display_mutual_info(df, 'user_id', cols_a)
+    display_mutual_info(df, 'user_id', cols_a, 'sessions')
 
     print('{sessions product_id mutual information scores}')
     cols_b = ['product_id', 'user_id', 'event_type', 'offered_discount']
-    display_mutual_info(df, 'product_id', cols_b)
+    display_mutual_info(df, 'product_id', cols_b, 'sessions')
 
 
 def mutual_info_score(df, col1, col2):
@@ -352,7 +370,7 @@ def mutual_info_score_with_noise(df, col1, col2, evaluations=100):
     return mi, noise_mi/evaluations
 
 
-def display_mutual_info(df, column_name, all_column_names):
+def display_mutual_info(df, column_name, all_column_names, file_name):
     df_aux = df[all_column_names].copy()
     df_aux = df_aux.assign(checkMCAR=np.where(df[column_name].isnull(), 1, 0))
     all_column_names.append('checkMCAR')
@@ -367,7 +385,7 @@ def display_mutual_info(df, column_name, all_column_names):
 
     plt.subplots(figsize=(8, 6))
     sns.heatmap(df_heatmap, annot=True)
-    plt.savefig("output/sessions_mutual_info_{}.jpg".format(column_name))
+    plt.savefig("output/{}_mutual_info_{}.jpg".format(file_name, column_name))
     print('saved to output')
 
 
