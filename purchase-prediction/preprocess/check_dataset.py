@@ -338,11 +338,10 @@ def check_plot(df, column_name):
 
 def session_mutual_info(df):
     print('{sessions user_id mutual information scores}')
-    rest_cols = ['event_type', 'offered_discount']
-    display_mutual_info(df, 'user_id', 'product_id', rest_cols)
+    display_mutual_info(df, 'user_id', 'product_id')
 
     print('{sessions product_id mutual information scores}')
-    display_mutual_info(df, 'product_id', 'user_id', rest_cols)
+    display_mutual_info(df, 'product_id', 'user_id')
 
 
 def mutual_info_score(df, col1, col2):
@@ -368,18 +367,25 @@ def mutual_info_score_with_noise(df, col1, col2, evaluations=100):
     return mi, noise_mi/evaluations
 
 
-def display_mutual_info(df, column_name, column_w_nan, rest_column_names):
-    df_X = df[rest_column_names].copy()
+def display_mutual_info(df, column_name, column_w_nan):
+    original_rest_cols = ['event_type', 'offered_discount']
+    df_X = df[original_rest_cols].copy()
+    df_X = df_X.assign(is_buy=np.where(df_X['event_type'] == 'BUY_PRODUCT', '1', '0'))
+    df_X.drop(['event_type'], axis=1, inplace=True)
+    rest_columns = ['is_buy', 'offered_discount']
 
-    df_na = df[[column_name, column_w_nan]].copy()
-    df_na = df_na.dropna()
-    df_y2 = df_na.assign(checkMCAR=np.where(df[column_name].isnull(), 1, 0))
+    df_y = df[[column_name]].copy()
+    df_y = df_y.assign(checkMCAR=np.where(df_y[column_name].isnull(), '1', '0'))
+    df_y = df_y[['checkMCAR']].copy()
 
-    df_c = df[[column_name]].copy()
-    df_y = df_c.assign(checkMCAR=np.where(df[column_name].isnull(), 1, 0))
+    df_na = df[[column_name, column_w_nan, rest_columns[1]]].copy()
+    df_na = df_na.dropna(subset=[column_w_nan])
+    df_y2 = df_na.assign(checkMCAR=np.where(df_na[column_name].isnull(), '1', '0'))
+    df_y2 = df_y2[['checkMCAR']].copy()
+    df_X2 = df_na[[column_w_nan, rest_columns[1]]].copy()
 
-    mis = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 0])
-    mis2 = feature_selection.mutual_info_classif(df_X, df_y2, discrete_features=1)
+    mis = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 0]).tolist()
+    mis2 = feature_selection.mutual_info_classif(df_X2, df_y2, discrete_features=[1, 0]).tolist()
     mis.append(mis2[0])
 
     noises_sum = [0, 0, 0]
@@ -387,12 +393,16 @@ def display_mutual_info(df, column_name, column_w_nan, rest_column_names):
     np.random.seed(SEED)
     average_over = 100
     for i in range(average_over):
-        df_y['checkMCAR'] = np.random.permutation(df['checkMCAR'].values)
-        noises = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 1, 0])
+        df_y['checkMCAR'] = np.random.permutation(df_y['checkMCAR'].values)
+        df_y2['checkMCAR'] = np.random.permutation(df_y2['checkMCAR'].values)
+        noises = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 0]).tolist()
+        noises2 = feature_selection.mutual_info_classif(df_X2, df_y2, discrete_features=[1, 0]).tolist()
+        noises.append(noises2[0])
         noises_sum = [a + b for a, b in zip(noises, noises_sum)]    # add lists element-wise
     noises_avg = [a/average_over for a in noises_sum]
 
-    df_heatmap = pd.DataFrame({column_name + ' missing values': mis, 'noise': noises_avg}, index=rest_column_names)
+    df_heatmap = pd.DataFrame({column_name + ' missing values': mis, 'noise': noises_avg},
+                              index=[column_w_nan, 'event_type', 'offered_discount'])
 
     plt.subplots(figsize=(8, 6))
     sns.heatmap(df_heatmap, annot=True)
