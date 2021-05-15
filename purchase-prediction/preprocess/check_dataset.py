@@ -15,8 +15,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from pandas.core.dtypes.common import is_numeric_dtype, is_string_dtype
-from IPython.display import display
-from sklearn import metrics
+from sklearn import feature_selection
 
 SEED = 87342597
 
@@ -339,12 +338,11 @@ def check_plot(df, column_name):
 
 def session_mutual_info(df):
     print('{sessions user_id mutual information scores}')
-    cols_a = ['user_id', 'product_id', 'event_type', 'offered_discount']
-    display_mutual_info(df, 'user_id', cols_a, 'sessions')
+    rest_cols = ['event_type', 'offered_discount']
+    display_mutual_info(df, 'user_id', 'product_id', rest_cols)
 
     print('{sessions product_id mutual information scores}')
-    cols_b = ['product_id', 'user_id', 'event_type', 'offered_discount']
-    display_mutual_info(df, 'product_id', cols_b, 'sessions')
+    display_mutual_info(df, 'product_id', 'user_id', rest_cols)
 
 
 def mutual_info_score(df, col1, col2):
@@ -370,22 +368,35 @@ def mutual_info_score_with_noise(df, col1, col2, evaluations=100):
     return mi, noise_mi/evaluations
 
 
-def display_mutual_info(df, column_name, all_column_names, file_name):
-    df_aux = df[all_column_names].copy()
-    df_aux = df_aux.assign(checkMCAR=np.where(df[column_name].isnull(), 1, 0))
-    all_column_names.append('checkMCAR')
+def display_mutual_info(df, column_name, column_w_nan, rest_column_names):
+    df_X = df[rest_column_names].copy()
 
-    mis = []
-    noises = []
-    for col in all_column_names[1:]:
-        mi, noise_mi = mutual_info_score_with_noise(df_aux, col, column_name)
-        mis.append(mi)
-        noises.append(noise_mi)
-    df_heatmap = pd.DataFrame({column_name: mis, 'noise': noises}, index=all_column_names[1:])
+    df_na = df[[column_name, column_w_nan]].copy()
+    df_na = df_na.dropna()
+    df_y2 = df_na.assign(checkMCAR=np.where(df[column_name].isnull(), 1, 0))
+
+    df_c = df[[column_name]].copy()
+    df_y = df_c.assign(checkMCAR=np.where(df[column_name].isnull(), 1, 0))
+
+    mis = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 0])
+    mis2 = feature_selection.mutual_info_classif(df_X, df_y2, discrete_features=1)
+    mis.append(mis2[0])
+
+    noises_sum = [0, 0, 0]
+
+    np.random.seed(SEED)
+    average_over = 100
+    for i in range(average_over):
+        df_y['checkMCAR'] = np.random.permutation(df['checkMCAR'].values)
+        noises = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 1, 0])
+        noises_sum = [a + b for a, b in zip(noises, noises_sum)]    # add lists element-wise
+    noises_avg = [a/average_over for a in noises_sum]
+
+    df_heatmap = pd.DataFrame({column_name + ' missing values': mis, 'noise': noises_avg}, index=rest_column_names)
 
     plt.subplots(figsize=(8, 6))
     sns.heatmap(df_heatmap, annot=True)
-    plt.savefig("output/{}_mutual_info_{}.jpg".format(file_name, column_name))
+    plt.savefig("output/sessions_mutual_info_{}.jpg".format(column_name))
     print('saved to output')
 
 

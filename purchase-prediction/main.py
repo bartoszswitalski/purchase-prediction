@@ -12,5 +12,5 @@ from preprocess.check_dataset import *
 if __name__ == '__main__':
     # users_check()
     # products_check()
-    # sessions_check()
-    calculate_input_target_mi()
+    sessions_check()
+    # calculate_input_target_mi()
