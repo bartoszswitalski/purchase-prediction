@@ -15,10 +15,27 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from pandas.core.dtypes.common import is_numeric_dtype, is_string_dtype
-from IPython.display import display
-from sklearn import metrics
+from sklearn import feature_selection
 
 SEED = 87342597
+
+
+def calculate_input_target_mi():
+    df_u = pd.read_csv('output/users.csv',sep=';')
+    df_p = pd.read_csv('output/products.csv',sep=';')
+    df_s = pd.read_csv('output/sessions.csv',sep=';')
+
+    is_buy_values = df_s['event_type'].values
+    df_s.drop(['event_type'], axis=1, inplace=True)
+    target_variable = 'is_buy'
+
+    # df_u.insert(0, target_variable, is_buy_values)
+    # df_p.insert(0, target_variable, is_buy_values)
+    df_s.insert(0, target_variable, is_buy_values)
+
+    # display_mutual_info(df_u, target_variable, df_u.columns, 'users_to_target')
+    # display_mutual_info(df_p, target_variable, df_p.columns, 'products_to_target')
+    display_mutual_info(df_s, target_variable, df_s.columns, 'sessions_to_target')
 
 
 def users_check():
@@ -321,12 +338,10 @@ def check_plot(df, column_name):
 
 def session_mutual_info(df):
     print('{sessions user_id mutual information scores}')
-    cols_a = ['user_id', 'product_id', 'event_type', 'offered_discount']
-    display_mutual_info(df, 'user_id', cols_a)
+    display_mutual_info(df, 'user_id', 'product_id')
 
     print('{sessions product_id mutual information scores}')
-    cols_b = ['product_id', 'user_id', 'event_type', 'offered_discount']
-    display_mutual_info(df, 'product_id', cols_b)
+    display_mutual_info(df, 'product_id', 'user_id')
 
 
 def mutual_info_score(df, col1, col2):
@@ -352,18 +367,42 @@ def mutual_info_score_with_noise(df, col1, col2, evaluations=100):
     return mi, noise_mi/evaluations
 
 
-def display_mutual_info(df, column_name, all_column_names):
-    df_aux = df[all_column_names].copy()
-    df_aux = df_aux.assign(checkMCAR=np.where(df[column_name].isnull(), 1, 0))
-    all_column_names.append('checkMCAR')
+def display_mutual_info(df, column_name, column_w_nan):
+    original_rest_cols = ['event_type', 'offered_discount']
+    df_X = df[original_rest_cols].copy()
+    df_X = df_X.assign(is_buy=np.where(df_X['event_type'] == 'BUY_PRODUCT', '1', '0'))
+    df_X.drop(['event_type'], axis=1, inplace=True)
+    rest_columns = ['is_buy', 'offered_discount']
 
-    mis = []
-    noises = []
-    for col in all_column_names[1:]:
-        mi, noise_mi = mutual_info_score_with_noise(df_aux, col, column_name)
-        mis.append(mi)
-        noises.append(noise_mi)
-    df_heatmap = pd.DataFrame({column_name: mis, 'noise': noises}, index=all_column_names[1:])
+    df_y = df[[column_name]].copy()
+    df_y = df_y.assign(checkMCAR=np.where(df_y[column_name].isnull(), '1', '0'))
+    df_y = df_y[['checkMCAR']].copy()
+
+    df_na = df[[column_name, column_w_nan, rest_columns[1]]].copy()
+    df_na = df_na.dropna(subset=[column_w_nan])
+    df_y2 = df_na.assign(checkMCAR=np.where(df_na[column_name].isnull(), '1', '0'))
+    df_y2 = df_y2[['checkMCAR']].copy()
+    df_X2 = df_na[[column_w_nan, rest_columns[1]]].copy()
+
+    mis = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 0]).tolist()
+    mis2 = feature_selection.mutual_info_classif(df_X2, df_y2, discrete_features=[1, 0]).tolist()
+    mis.append(mis2[0])
+
+    noises_sum = [0, 0, 0]
+
+    np.random.seed(SEED)
+    average_over = 100
+    for i in range(average_over):
+        df_y['checkMCAR'] = np.random.permutation(df_y['checkMCAR'].values)
+        df_y2['checkMCAR'] = np.random.permutation(df_y2['checkMCAR'].values)
+        noises = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 0]).tolist()
+        noises2 = feature_selection.mutual_info_classif(df_X2, df_y2, discrete_features=[1, 0]).tolist()
+        noises.append(noises2[0])
+        noises_sum = [a + b for a, b in zip(noises, noises_sum)]    # add lists element-wise
+    noises_avg = [a/average_over for a in noises_sum]
+
+    df_heatmap = pd.DataFrame({column_name + ' missing values': mis, 'noise': noises_avg},
+                              index=[column_w_nan, 'event_type', 'offered_discount'])
 
     plt.subplots(figsize=(8, 6))
     sns.heatmap(df_heatmap, annot=True)
