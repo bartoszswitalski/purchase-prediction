@@ -7,6 +7,8 @@
     Warsaw University of Technology
     Faculty of Electronics and Information Technology
 """
+import random
+
 from preprocess.json_read import *
 
 import datetime
@@ -81,7 +83,7 @@ def products_check():
     check_range(df, 0, 10 ** 4, 'price')
     check_plot(df, 'price')
 
-    # products_mutual_info(df)
+    products_mutual_info(df)
 
     df = delete_invalid_price(df)
     df = df.drop(['product_name'], axis=1)
@@ -399,7 +401,6 @@ def session_mutual_info_for_input(df):
     plt.savefig("output/sessions_to_output_mutual_info.jpg")
     print('saved to output')
 
-
 def session_mutual_info(df):
     print('{sessions user_id mutual information scores}')
     display_mutual_info(df, 'user_id', 'product_id')
@@ -491,7 +492,30 @@ def products_mutual_info(df):
     df_a['price'] = np.where(df_a['price'] >= 10 ** 4, 1, df_a['price'])
     df_a['price'] = df_a['price'].astype(int)
 
-    mi, noise_mi = mutual_info_score_with_noise(df_a, 'category_path', 'price')
+    le = preprocessing.LabelEncoder()
+    df_a['category_path'] = le.fit_transform(df_a['category_path'].values)
+    df_a['dummy'] = random.randint(0, 1)
 
-    print('out-of-range price and category_path mutual information score: {:.4f}'.format(mi))
-    print('mutual information score noise: {:>37.4f}'.format(noise_mi))
+    df_aux = df_a[['category_path', 'dummy']].copy()
+
+    mis = feature_selection.mutual_info_classif(df_aux, df_a['price'].values.flatten().reshape(-1, ),
+                                                discrete_features=[1, 0]).tolist()
+    noises_sum = [0, 0]
+
+    np.random.seed(SEED)
+    average_over = 100
+    for i in range(average_over):
+        df_a['price'] = np.random.permutation(df_a['price'].values)
+        noises = feature_selection.mutual_info_classif(df_aux, df_a['price'].values.flatten().reshape(-1, ),
+                                                       discrete_features=[1, 0]).tolist()
+
+        noises_sum = [a + b for a, b in zip(noises, noises_sum)]  # add lists element-wise
+    noises_avg = [a / average_over for a in noises_sum]
+
+    df_heatmap = pd.DataFrame({'price invalid values': mis, 'noise': noises_avg},
+                              index=['category_path', 'dummy'])
+
+    plt.subplots(figsize=(8, 6))
+    sns.heatmap(df_heatmap, annot=True)
+    plt.savefig("output/products_mutual_info_{}.jpg".format('price'))
+    print('saved to output')

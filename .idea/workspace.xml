@@ -106,7 +106,8 @@
       <workItem from="1620477654325" duration="324000" />
       <workItem from="1621100009726" duration="9440000" />
       <workItem from="1621170488867" duration="444000" />
-      <workItem from="1621170954772" duration="9232000" />
+      <workItem from="1621170954772" duration="9307000" />
+      <workItem from="1621193366538" duration="2749000" />
     </task>
     <servers />
   </component>
@@ -126,6 +127,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+<<<<<<< HEAD
     <SUITE FILE_PATH="coverage/purchase_prediction$main.coverage" NAME="main Coverage Results" MODIFIED="1621200936526" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/purchase-prediction" />
+=======
+    <SUITE FILE_PATH="coverage/purchase_prediction$main.coverage" NAME="main Coverage Results" MODIFIED="1621196160405" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/purchase-prediction" />
+>>>>>>> f72221e7e28a560eb12804f3066238660d31367a
   </component>
 </project>
