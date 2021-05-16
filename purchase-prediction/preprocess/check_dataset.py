@@ -15,15 +15,15 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from pandas.core.dtypes.common import is_numeric_dtype, is_string_dtype
-from sklearn import feature_selection
+from sklearn import feature_selection, metrics, preprocessing
 
 SEED = 87342597
 
 
 def calculate_input_target_mi():
-    df_u = pd.read_csv('output/users.csv',sep=';')
-    df_p = pd.read_csv('output/products.csv',sep=';')
-    df_s = pd.read_csv('output/sessions.csv',sep=';')
+    df_u = pd.read_csv('output/users.csv', sep=';')
+    df_p = pd.read_csv('output/products.csv', sep=';')
+    df_s = pd.read_csv('output/sessions.csv', sep=';')
 
     is_buy_values = df_s['event_type'].values
     df_s.drop(['event_type'], axis=1, inplace=True)
@@ -56,6 +56,8 @@ def users_check():
 
     df = df.drop(['name', 'city', 'street'], axis=1)
     df.to_csv("output/users.csv", sep=';', encoding='utf-8', index=False)
+
+    return df
 
 
 def products_check():
@@ -97,17 +99,22 @@ def products_check():
     check_range(df, 0, 10 ** 4, 'price')
     check_plot(df, 'price')
 
-    products_mutual_info(df)
+    # products_mutual_info(df)
 
     df = delete_invalid_price(df)
     df = df.drop(['product_name'], axis=1)
     df.to_csv("output/products.csv", sep=';', encoding='utf-8', index=False)
+
+    return df
 
 
 def sessions_check():
     df_s = pd.DataFrame(get_jsonl_data('sessions.jsonl'))
     df_p = pd.DataFrame(get_jsonl_data('products.jsonl'))
     df_u = pd.DataFrame(get_jsonl_data('users.jsonl'))
+
+    df_p = delete_invalid_price(df_p)
+    df_p = df_p.drop(['product_name'], axis=1)
 
     """
     Check if:
@@ -156,20 +163,43 @@ def sessions_check():
 
     session_mutual_info(df_s)
 
-    # after checking if missing data is MCAR
+    print('{after checking if missing data is MCAR}')
     print('\nClean missing data')
+
     df_s = delete_nulls(df_s, 'product_id')
     df_s = fix_null_user_ids(df_s)
+
     df_s['user_id'] = df_s['user_id'].astype(int)
     check_constraints_users_ids(df_s, df_u)
 
     df_s['product_id'] = df_s['product_id'].astype(int)
     check_constraints_products_ids(df_s, df_p)
 
+    df_s = delete_constraints_violations(df_s, df_p)
+    check_event_type(df_s)
+    count_sessions_by_purchase(df_s)
+
     df_s['offered_discount'] = df_s['offered_discount'].astype(int)
 
-    df_s = df_s.drop(['purchase_id'], axis=1)
     df_s.to_csv("output/sessions.csv", sep=';', encoding='utf-8', index=False)
+
+    le = preprocessing.LabelEncoder()
+    df_s['category_path'] = le.fit_transform(df_s['category_path'].values)
+    df_s['month'] = pd.DatetimeIndex(df_s['timestamp']).month
+    df_s['day'] = pd.DatetimeIndex(df_s['timestamp']).day
+    df_s['weekDay'] = pd.DatetimeIndex(df_s['timestamp']).weekday
+    df_s['hour'] = pd.DatetimeIndex(df_s['timestamp']).hour
+
+    df_s = df_s.drop(['timestamp'], axis=1)
+
+    df_s = df_s.assign(is_buy=np.where(df_s['event_type'] == 'BUY_PRODUCT', '1', '0'))
+    df_s = df_s.drop(['event_type'], axis=1)
+
+    with pd.option_context('display.max_columns', None):
+        print(df_s)
+
+    # to nic nie robi na razie
+    session_mutual_info_for_input(df_s)
 
 
 def check_unique_values(df, column_name):
@@ -231,18 +261,35 @@ def fix_null_user_ids(df):
 
 def check_constraints_users_ids(df_a, df_b):
     print('------checking constraints for user_id')
-    df_aux = df_a
+    df_aux = df_a.copy()
     df_aux = df_aux.assign(integrity=df_a.user_id.isin(df_b.user_id).astype(int))
     result = df_aux[df_aux['integrity'] == 0].index.tolist()
-    print(result == [])
+    if not result:
+        print(True)
+    else:
+        print(str(len(result)) + " constraint violations.")
 
 
 def check_constraints_products_ids(df_a, df_b):
     print('------checking constraints for product_id')
-    df_aux = df_a
+    df_aux = df_a.copy()
     df_aux = df_aux.assign(integrity=df_a.product_id.isin(df_b.product_id).astype(int))
     result = df_aux[df_aux['integrity'] == 0].index.tolist()
-    print(result == [])
+
+    if not result:
+        print(True)
+    else:
+        print(str(len(result)) + " constraint violations.")
+
+
+def delete_constraints_violations(df_s, df_p):
+    print('------deleting constraints violations')
+
+    df_s = df_s.join(df_p.set_index('product_id'), on='product_id')
+    df_s = df_s.drop(['purchase_id'], axis=1)
+    df_s = df_s.dropna()
+
+    return df_s
 
 
 def check_event_type(df):
@@ -305,6 +352,7 @@ def valid_timestamp(timestamp_str):
 
 
 def count_sessions_by_purchase(df):
+    print('------counting sessions by purchase')
     buy_sessions = 0
     view_sessions = -1
 
@@ -336,6 +384,11 @@ def check_plot(df, column_name):
     print('saved to output')
 
 
+def session_mutual_info_for_input(df_s):
+    print('{sessions is_buy mutual information scores}')
+
+
+
 def session_mutual_info(df):
     print('{sessions user_id mutual information scores}')
     display_mutual_info(df, 'user_id', 'product_id')
@@ -364,7 +417,7 @@ def mutual_info_score_with_noise(df, col1, col2, evaluations=100):
         df_shuffled[col2] = np.random.permutation(df[col2].values)
         noise_mi += mutual_info_score(df_shuffled, col1, col2)
 
-    return mi, noise_mi/evaluations
+    return mi, noise_mi / evaluations
 
 
 def display_mutual_info(df, column_name, column_w_nan):
@@ -384,8 +437,10 @@ def display_mutual_info(df, column_name, column_w_nan):
     df_y2 = df_y2[['checkMCAR']].copy()
     df_X2 = df_na[[column_w_nan, rest_columns[1]]].copy()
 
-    mis = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 0]).tolist()
-    mis2 = feature_selection.mutual_info_classif(df_X2, df_y2, discrete_features=[1, 0]).tolist()
+    mis = feature_selection.mutual_info_classif(df_X, df_y.values.flatten().reshape(-1, ),
+                                                discrete_features=[1, 0]).tolist()
+    mis2 = feature_selection.mutual_info_classif(df_X2, df_y2.values.flatten().reshape(-1, ),
+                                                 discrete_features=[1, 0]).tolist()
     mis.append(mis2[0])
 
     noises_sum = [0, 0, 0]
@@ -395,11 +450,13 @@ def display_mutual_info(df, column_name, column_w_nan):
     for i in range(average_over):
         df_y['checkMCAR'] = np.random.permutation(df_y['checkMCAR'].values)
         df_y2['checkMCAR'] = np.random.permutation(df_y2['checkMCAR'].values)
-        noises = feature_selection.mutual_info_classif(df_X, df_y, discrete_features=[1, 0]).tolist()
-        noises2 = feature_selection.mutual_info_classif(df_X2, df_y2, discrete_features=[1, 0]).tolist()
+        noises = feature_selection.mutual_info_classif(df_X, df_y.values.flatten().reshape(-1, ),
+                                                       discrete_features=[1, 0]).tolist()
+        noises2 = feature_selection.mutual_info_classif(df_X2, df_y2.values.flatten().reshape(-1, ),
+                                                        discrete_features=[1, 0]).tolist()
         noises.append(noises2[0])
-        noises_sum = [a + b for a, b in zip(noises, noises_sum)]    # add lists element-wise
-    noises_avg = [a/average_over for a in noises_sum]
+        noises_sum = [a + b for a, b in zip(noises, noises_sum)]  # add lists element-wise
+    noises_avg = [a / average_over for a in noises_sum]
 
     df_heatmap = pd.DataFrame({column_name + ' missing values': mis, 'noise': noises_avg},
                               index=[column_w_nan, 'event_type', 'offered_discount'])
