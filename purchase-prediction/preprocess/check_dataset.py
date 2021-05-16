@@ -20,24 +20,6 @@ from sklearn import feature_selection, metrics, preprocessing
 SEED = 87342597
 
 
-def calculate_input_target_mi():
-    df_u = pd.read_csv('output/users.csv', sep=';')
-    df_p = pd.read_csv('output/products.csv', sep=';')
-    df_s = pd.read_csv('output/sessions.csv', sep=';')
-
-    is_buy_values = df_s['event_type'].values
-    df_s.drop(['event_type'], axis=1, inplace=True)
-    target_variable = 'is_buy'
-
-    # df_u.insert(0, target_variable, is_buy_values)
-    # df_p.insert(0, target_variable, is_buy_values)
-    df_s.insert(0, target_variable, is_buy_values)
-
-    # display_mutual_info(df_u, target_variable, df_u.columns, 'users_to_target')
-    # display_mutual_info(df_p, target_variable, df_p.columns, 'products_to_target')
-    display_mutual_info(df_s, target_variable, df_s.columns, 'sessions_to_target')
-
-
 def users_check():
     df = pd.DataFrame(get_jsonl_data('users.jsonl'))
     """
@@ -192,13 +174,11 @@ def sessions_check():
 
     df_s = df_s.drop(['timestamp'], axis=1)
 
-    df_s = df_s.assign(is_buy=np.where(df_s['event_type'] == 'BUY_PRODUCT', '1', '0'))
-    df_s = df_s.drop(['event_type'], axis=1)
+    df_s = add_is_buy(df_s)
 
     with pd.option_context('display.max_columns', None):
         print(df_s)
 
-    # to nic nie robi na razie
     session_mutual_info_for_input(df_s)
 
 
@@ -384,9 +364,40 @@ def check_plot(df, column_name):
     print('saved to output')
 
 
-def session_mutual_info_for_input(df_s):
+def add_is_buy(df_s):
+
+    buy_sessions = []
+    current_session_id = -1
+    for index, row in df_s.iterrows():
+        if current_session_id != row['session_id']:
+            current_session_id = row['session_id']
+
+        if row['event_type'] == 'BUY_PRODUCT':
+            buy_sessions.append(current_session_id)
+
+    return df_s.assign(is_buy=np.where(df_s['session_id'].isin(buy_sessions), '1', '0'))
+
+
+def session_mutual_info_for_input(df):
     print('{sessions is_buy mutual information scores}')
 
+    cols = df.columns.tolist()
+    cols.remove('is_buy')
+    df_X = df[cols].copy()
+    df_X = df_X.assign(event=np.where(df_X['event_type'] == 'BUY_PRODUCT', '1', '0'))
+    df_X.drop(['event_type'], axis=1, inplace=True)
+    df_X.rename(columns={'event': 'event_type'}, inplace=True)
+    df_y = df[['is_buy']].copy()
+
+    mis = feature_selection.mutual_info_classif(df_X, df_y.values.flatten().reshape(-1, ),
+                                                discrete_features=[1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1]).tolist()
+
+    df_heatmap = pd.DataFrame({'is_buy': mis}, index=cols)
+
+    plt.subplots(figsize=(8, 6))
+    sns.heatmap(df_heatmap, annot=True)
+    plt.savefig("output/sessions_to_output_mutual_info.jpg")
+    print('saved to output')
 
 
 def session_mutual_info(df):
