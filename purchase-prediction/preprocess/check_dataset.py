@@ -97,7 +97,7 @@ def sessions_check():
     df_p = pd.DataFrame(get_jsonl_data('products.jsonl'))
     df_u = pd.DataFrame(get_jsonl_data('users.jsonl'))
 
-    df_p = delete_invalid_price(df_p)
+    df_p = df_p[(df_p['price'] > 0) & (df_p['price'] < 10 ** 4)]
     df_p = df_p.drop(['product_name'], axis=1)
 
     """
@@ -138,16 +138,16 @@ def sessions_check():
     print('{event_type}')
     check_if_empty(df_s, 'event_type')
     check_event_type(df_s)
-    count_sessions_by_purchase(df_s)
+    # count_sessions_by_purchase(df_s)
 
-    print('{offered_discount}')
+    print('\n{offered_discount}')
     check_if_empty(df_s, 'offered_discount')
     check_if_numeric(df_s, 'offered_discount')
     check_range(df_s, 0, 100, 'offered_discount')
 
     session_mutual_info(df_s)
 
-    print('{after checking if missing data is MCAR}')
+    print('\n{after checking if missing data is MCAR}')
     print('\nClean missing data')
 
     df_s = delete_nulls(df_s, 'product_id')
@@ -178,8 +178,8 @@ def sessions_check():
 
     df_s = add_is_buy(df_s)
 
-    with pd.option_context('display.max_columns', None):
-        print(df_s)
+    # with pd.option_context('display.max_columns', None):
+    #     print(df_s)
 
     session_mutual_info_for_input(df_s)
 
@@ -401,6 +401,7 @@ def session_mutual_info_for_input(df):
     plt.savefig("output/sessions_to_output_mutual_info.jpg")
     print('saved to output')
 
+
 def session_mutual_info(df):
     print('{sessions user_id mutual information scores}')
     display_mutual_info(df, 'user_id', 'product_id')
@@ -480,7 +481,7 @@ def display_mutual_info(df, column_name, column_w_nan):
 
 
 def products_mutual_info(df):
-    print('{price mutual information}')
+    print('\n{price mutual information}')
 
     df_a = df.copy()
 
