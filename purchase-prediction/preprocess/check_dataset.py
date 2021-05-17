@@ -385,6 +385,7 @@ def session_mutual_info_for_input(df):
 
     cols = df.columns.tolist()
     cols.remove('is_buy')
+    cols.remove('session_id')
     df_X = df[cols].copy()
     df_X = df_X.assign(event=np.where(df_X['event_type'] == 'BUY_PRODUCT', '1', '0'))
     df_X.drop(['event_type'], axis=1, inplace=True)
@@ -392,7 +393,7 @@ def session_mutual_info_for_input(df):
     df_y = df[['is_buy']].copy()
 
     mis = feature_selection.mutual_info_classif(df_X, df_y.values.flatten().reshape(-1, ),
-                                                discrete_features=[1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1]).tolist()
+                                                discrete_features=[1, 1, 1, 0, 1, 0, 1, 1, 1, 1]).tolist()
 
     df_heatmap = pd.DataFrame({'is_buy': mis}, index=cols)
 
