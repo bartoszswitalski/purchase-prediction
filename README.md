@@ -8,6 +8,8 @@ https://proceedings-of-deim.github.io/DEIM2020/papers/B4-3.pdf
 
 https://link.springer.com/article/10.1007/s12525-020-00448-x
 
+https://machinelearningmastery.com/how-to-prepare-categorical-data-for-deep-learning-in-python/
+
 Doc:
 
 https://www.overleaf.com/7889117745kqfknqmsdmbw
