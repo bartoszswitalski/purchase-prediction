@@ -67,8 +67,6 @@ def products_check():
     df = df.drop(['product_name'], axis=1)
     df.to_csv("output/products.csv", sep=';', encoding='utf-8', index=False)
 
-    return df
-
 
 def products_mutual_info(df):
     print('\n{price mutual information}')
@@ -90,7 +88,7 @@ def products_mutual_info(df):
     df_aux = df_a[['category_path', 'dummy']].copy()
 
     mis = feature_selection.mutual_info_classif(df_aux, df_a['price'].values.flatten().reshape(-1, ),
-                                                discrete_features=[1, 0]).tolist()
+                                                discrete_features=[0]).tolist()
     noises_sum = [0, 0]
 
     np.random.seed(SEED)
@@ -98,7 +96,7 @@ def products_mutual_info(df):
     for i in range(average_over):
         df_a['price'] = np.random.permutation(df_a['price'].values)
         noises = feature_selection.mutual_info_classif(df_aux, df_a['price'].values.flatten().reshape(-1, ),
-                                                       discrete_features=[1, 0]).tolist()
+                                                       discrete_features=[0]).tolist()
 
         noises_sum = [a + b for a, b in zip(noises, noises_sum)]  # add lists element-wise
     noises_avg = [a / average_over for a in noises_sum]

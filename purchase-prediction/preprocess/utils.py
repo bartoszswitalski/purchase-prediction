@@ -204,6 +204,8 @@ def add_is_buy(df_s):
         if row['event_type'] == 'BUY_PRODUCT':
             buy_sessions.append(current_session_id)
 
+    df_s = df_s.drop(['event_type'], axis=1)
+
     return df_s.assign(is_buy=np.where(df_s['session_id'].isin(buy_sessions), '1', '0'))
 
 
@@ -214,18 +216,31 @@ def session_mutual_info_for_input(df):
     cols.remove('is_buy')
     cols.remove('session_id')
     df_x = df[cols].copy()
-    df_x = df_x.assign(event=np.where(df_x['event_type'] == 'BUY_PRODUCT', '1', '0'))
-    df_x.drop(['event_type'], axis=1, inplace=True)
-    df_x.rename(columns={'event': 'event_type'}, inplace=True)
     df_y = df[['is_buy']].copy()
+
+    df_x = df_x[['price', 'offered_discount', 'category_path', 'city', 'month', 'day', 'weekDay', 'hour']]
+
+    # df_x = pd.get_dummies(df_x, columns=['weekDay'])
+    # cols = df_x.columns.tolist()
 
     # with pd.option_context('display.max_columns', None):
     #     print(df_x)
 
     mis = feature_selection.mutual_info_classif(df_x, df_y.values.flatten().reshape(-1, ),
-                                                discrete_features=[1, 1, 0, 1, 1, 1, 1, 1, 1]).tolist()
+                                                discrete_features=[1, 2, 3, 4, 5, 6, 7]).tolist()
 
-    df_heatmap = pd.DataFrame({'is_buy': mis}, index=cols)
+    noises_sum = [0, 0, 0, 0, 0, 0, 0, 0]
+    average_over = 100
+
+    for i in range(average_over):
+        df_y['is_buy'] = np.random.permutation(df_y['is_buy'].values)
+        noises = feature_selection.mutual_info_classif(df_x, df_y.values.flatten().reshape(-1, ),
+                                                       discrete_features=[1, 2, 3, 4, 5, 6, 7]).tolist()
+
+        noises_sum = [a + b for a, b in zip(noises, noises_sum)]  # add lists element-wise
+    noises_avg = [a / average_over for a in noises_sum]
+
+    df_heatmap = pd.DataFrame({'is_buy': mis, 'noise': noises_avg}, index=cols)
 
     plt.subplots(figsize=(8, 6))
     sb.heatmap(df_heatmap, annot=True)

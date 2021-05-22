@@ -98,22 +98,39 @@ def sessions_check():
 
     df_s.to_csv("output/sessions.csv", sep=';', encoding='utf-8', index=False)
 
-    le = preprocessing.LabelEncoder()
-    df_s['category_path'] = le.fit_transform(df_s['category_path'].values)
-    df_s['city'] = le.fit_transform(df_s['city'].values)
-    df_s['month'] = pd.DatetimeIndex(df_s['timestamp']).month
-    df_s['day'] = pd.DatetimeIndex(df_s['timestamp']).day
-    df_s['weekDay'] = pd.DatetimeIndex(df_s['timestamp']).weekday
-    df_s['hour'] = pd.DatetimeIndex(df_s['timestamp']).hour
+    df_s_for_mi = df_s.copy()
 
+    df_s_for_mi['month'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).month
+    df_s_for_mi['day'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).day
+    df_s_for_mi['weekDay'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).weekday
+    df_s_for_mi['hour'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).hour
+
+    df_s['month'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).month
+    df_s['day'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).day
+    df_s['weekDay'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).weekday
+    df_s['hour'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).hour
+
+    le = preprocessing.LabelEncoder()
+    df_s_for_mi['category_path'] = le.fit_transform(df_s_for_mi['category_path'].values)
+    df_s_for_mi['city'] = le.fit_transform(df_s_for_mi['city'].values)
+    df_s_for_mi['month'] = le.fit_transform(df_s_for_mi['month'].values)
+    df_s_for_mi['day'] = le.fit_transform(df_s_for_mi['day'].values)
+    df_s_for_mi['weekDay'] = le.fit_transform(df_s_for_mi['weekDay'].values)
+    df_s_for_mi['hour'] = le.fit_transform(df_s_for_mi['hour'].values)
+    df_s_for_mi['offered_discount'] = le.fit_transform(df_s_for_mi['offered_discount'].values)
+
+    df_s_for_mi = df_s_for_mi.drop(['timestamp'], axis=1)
     df_s = df_s.drop(['timestamp'], axis=1)
 
+    df_s_for_mi = add_is_buy(df_s_for_mi)
     df_s = add_is_buy(df_s)
+
+    df_s.to_csv("output/sessions_merged.cv", sep=';', encoding='utf-8', index=False)
 
     # with pd.option_context('display.max_columns', None):
     #     print(df_s)
 
-    session_mutual_info_for_input(df_s)
+    session_mutual_info_for_input(df_s_for_mi)
 
 
 def session_mutual_info(df):
@@ -142,9 +159,9 @@ def display_mutual_info(df, column_name, column_w_nan):
     df_X2 = df_na[[column_w_nan, rest_columns[1]]].copy()
 
     mis = feature_selection.mutual_info_classif(df_X, df_y.values.flatten().reshape(-1, ),
-                                                discrete_features=[1, 0]).tolist()
+                                                discrete_features=[0]).tolist()
     mis2 = feature_selection.mutual_info_classif(df_X2, df_y2.values.flatten().reshape(-1, ),
-                                                 discrete_features=[1, 0]).tolist()
+                                                 discrete_features=[0]).tolist()
     mis.append(mis2[0])
 
     noises_sum = [0, 0, 0]
@@ -155,9 +172,9 @@ def display_mutual_info(df, column_name, column_w_nan):
         df_y['checkMCAR'] = np.random.permutation(df_y['checkMCAR'].values)
         df_y2['checkMCAR'] = np.random.permutation(df_y2['checkMCAR'].values)
         noises = feature_selection.mutual_info_classif(df_X, df_y.values.flatten().reshape(-1, ),
-                                                       discrete_features=[1, 0]).tolist()
+                                                       discrete_features=[0]).tolist()
         noises2 = feature_selection.mutual_info_classif(df_X2, df_y2.values.flatten().reshape(-1, ),
-                                                        discrete_features=[1, 0]).tolist()
+                                                        discrete_features=[0]).tolist()
         noises.append(noises2[0])
         noises_sum = [a + b for a, b in zip(noises, noises_sum)]  # add lists element-wise
     noises_avg = [a / average_over for a in noises_sum]

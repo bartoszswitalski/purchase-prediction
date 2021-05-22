@@ -38,6 +38,3 @@ def users_check():
 
     df = df.drop(['name', 'street'], axis=1)
     df.to_csv("output/users.csv", sep=';', encoding='utf-8', index=False)
-
-    return df
-
