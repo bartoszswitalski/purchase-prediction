@@ -8,7 +8,7 @@
     Faculty of Electronics and Information Technology
 """
 from preprocess.json_read import get_jsonl_data
-from utils import check_if_empty, check_if_unique_values, check_if_numeric, check_range, plot_histogram
+from preprocess.utils import check_if_empty, check_if_unique_values, check_if_numeric, check_range, plot_histogram
 
 import pandas as pd
 

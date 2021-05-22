@@ -9,9 +9,9 @@
 """
 from sklearn import feature_selection, preprocessing
 
-from json_read import get_jsonl_data
-from csv_read import get_csv_data
-from utils import SEED, check_if_empty, check_if_numeric, check_range, check_timestamp, check_event_type, \
+from preprocess.json_read import get_jsonl_data
+from preprocess.csv_read import get_csv_data
+from preprocess.utils import SEED, check_if_empty, check_if_numeric, check_range, check_timestamp, check_event_type, \
     delete_nulls, fix_null_user_ids, delete_constraints_violations, count_sessions_by_purchase, \
     add_is_buy, session_mutual_info_for_input, check_constraints
 
@@ -96,41 +96,33 @@ def sessions_check():
 
     df_s['offered_discount'] = df_s['offered_discount'].astype(int)
 
-    df_s.to_csv("output/sessions.csv", sep=';', encoding='utf-8', index=False)
+    df_s['month'] = pd.DatetimeIndex(df_s['timestamp']).month
+    df_s['day'] = pd.DatetimeIndex(df_s['timestamp']).day
+    df_s['weekDay'] = pd.DatetimeIndex(df_s['timestamp']).weekday
+    df_s['hour'] = pd.DatetimeIndex(df_s['timestamp']).hour
 
-    df_s_for_mi = df_s.copy()
-
-    df_s_for_mi['month'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).month
-    df_s_for_mi['day'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).day
-    df_s_for_mi['weekDay'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).weekday
-    df_s_for_mi['hour'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).hour
-
-    df_s['month'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).month
-    df_s['day'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).day
-    df_s['weekDay'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).weekday
-    df_s['hour'] = pd.DatetimeIndex(df_s_for_mi['timestamp']).hour
-
-    le = preprocessing.LabelEncoder()
-    df_s_for_mi['category_path'] = le.fit_transform(df_s_for_mi['category_path'].values)
-    df_s_for_mi['city'] = le.fit_transform(df_s_for_mi['city'].values)
-    df_s_for_mi['month'] = le.fit_transform(df_s_for_mi['month'].values)
-    df_s_for_mi['day'] = le.fit_transform(df_s_for_mi['day'].values)
-    df_s_for_mi['weekDay'] = le.fit_transform(df_s_for_mi['weekDay'].values)
-    df_s_for_mi['hour'] = le.fit_transform(df_s_for_mi['hour'].values)
-    df_s_for_mi['offered_discount'] = le.fit_transform(df_s_for_mi['offered_discount'].values)
-
-    df_s_for_mi = df_s_for_mi.drop(['timestamp'], axis=1)
     df_s = df_s.drop(['timestamp'], axis=1)
-
-    df_s_for_mi = add_is_buy(df_s_for_mi)
     df_s = add_is_buy(df_s)
 
-    df_s.to_csv("output/sessions_merged.cv", sep=';', encoding='utf-8', index=False)
+    df_s = df_s[['session_id', 'price', 'offered_discount', 'category_path', 'city', 'month', 'day',
+                 'weekDay', 'hour', 'is_buy']]
+    df_s.to_csv("output/sessions.csv", sep=';', encoding='utf-8', index=False)
+
+    le = preprocessing.LabelEncoder()
+    df_s['offered_discount'] = le.fit_transform(df_s['offered_discount'].values)
+    df_s['category_path'] = le.fit_transform(df_s['category_path'].values)
+    df_s['city'] = le.fit_transform(df_s['city'].values)
+    df_s['month'] = le.fit_transform(df_s['month'].values)
+    df_s['day'] = le.fit_transform(df_s['day'].values)
+    df_s['weekDay'] = le.fit_transform(df_s['weekDay'].values)
+    df_s['hour'] = le.fit_transform(df_s['hour'].values)
+
+    df_s.to_csv("output/sessions_encoded.csv", sep=';', encoding='utf-8', index=False)
 
     # with pd.option_context('display.max_columns', None):
     #     print(df_s)
 
-    session_mutual_info_for_input(df_s_for_mi)
+    session_mutual_info_for_input(df_s)
 
 
 def session_mutual_info(df):
