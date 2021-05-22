@@ -10,9 +10,9 @@
 import json_lines
 
 
-def get_jsonl_data(file_name):
+def get_jsonl_data(path, file_name):
     data = []
-    with open('data/' + file_name) as f:
+    with open(path + file_name) as f:
         for item in json_lines.reader(f):
             data.append(item)
 
