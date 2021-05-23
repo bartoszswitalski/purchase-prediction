@@ -45,6 +45,8 @@ def aggregate_sessions(dataset):
         # print(session)
         # print('\n\n')
 
+        # todo: later
+
     print(sessions)
 
     return sessions
