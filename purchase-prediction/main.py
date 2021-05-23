@@ -7,6 +7,7 @@
     Warsaw University of Technology
     Faculty of Electronics and Information Technology
 """
+import tensorflow as tf
 from keras.utils.vis_utils import plot_model
 from numpy import unique
 from sklearn.model_selection import train_test_split
@@ -17,8 +18,14 @@ from keras.layers import Input, concatenate, Dense
 from keras.layers import Embedding
 from keras.models import Model
 
-
 if __name__ == '__main__':
+
+    # limit GPU usage
+    config = tf.compat.v1.ConfigProto()
+    config.gpu_options.allow_growth = True  # don't pre-allocate memory; allocate as-needed
+    config.gpu_options.per_process_gpu_memory_fraction = 0.95  # limit memory to be allocated
+    tf.compat.v1.keras.backend.set_session(tf.compat.v1.Session(config=config))  # create sess w/ above settings
+
     # load the dataset
     X, y = load_dataset('output/', 'sessions.csv')
     # split into train and test sets
@@ -36,14 +43,11 @@ if __name__ == '__main__':
     em_layers = list()
 
     # add layer for price
-    # in_layer = Input(shape=(1,))
-    # price_layer = Layer
-    # in_layers.append(in_layer)
-    # em_layers.append(price_layer)
+    in_layer_price = Input(shape=(1, 1))
+    in_layers.append(in_layer_price)
+    em_layers.append(in_layer_price)
 
-    # X_train_enc[:, 0] = np.asarray(X_train_enc[:, 0]).astype('float32')
-
-    for i in range(0, len(X_train_enc)):
+    for i in range(1, len(X_train_enc)):
         # calculate the number of unique inputs
         n_labels = len(unique(X_train_enc[i]))
         # define input layer
@@ -54,9 +58,8 @@ if __name__ == '__main__':
         in_layers.append(in_layer)
         em_layers.append(em_layer)
 
-    # concat all embeddings
-    merge = concatenate(em_layers)
-    print(merge)
+    # concat all layers(price + embeddings)
+    merge = concatenate(axis=-1, inputs=em_layers)
     dense = Dense(10, activation='relu', kernel_initializer='he_normal')(merge)
     output = Dense(1, activation='sigmoid')(dense)
     model = Model(inputs=in_layers, outputs=output)
@@ -66,7 +69,7 @@ if __name__ == '__main__':
     # plot graph
     plot_model(model, to_file='output/embeddings.png', show_shapes=True)
     # fit the keras model on the dataset
-    model.fit(X_train_enc, y_train_enc, epochs=20, batch_size=16, verbose=2)
+    model.fit(X_train_enc, y_train_enc, epochs=100, batch_size=128, verbose=2)
     # evaluate the keras model
     _, accuracy = model.evaluate(X_test_enc, y_test_enc, verbose=0)
-    print('Accuracy: %.2f' %(accuracy * 100))
+    print('Accuracy: %.2f' % (accuracy * 100))
