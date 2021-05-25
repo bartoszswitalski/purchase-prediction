@@ -141,3 +141,5 @@ cython_debug/
 
 # output
 purchase-prediction/output/*
+
+purchase-prediction/keras_tuner_config_output
