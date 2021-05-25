@@ -9,9 +9,9 @@
 """
 from sklearn import feature_selection, preprocessing
 
-from json_read import get_jsonl_data
-from csv_read import get_csv_data
-from utils import SEED, check_if_empty, check_if_numeric, check_range, check_timestamp, check_event_type, \
+from preprocess.json_read import get_jsonl_data
+from preprocess.csv_read import get_csv_data
+from preprocess.utils import SEED, check_if_empty, check_if_numeric, check_range, check_timestamp, check_event_type, \
     delete_nulls, fix_null_user_ids, delete_constraints_violations, count_sessions_by_purchase, \
     add_is_buy, session_mutual_info_for_input, check_constraints
 
@@ -96,19 +96,28 @@ def sessions_check():
 
     df_s['offered_discount'] = df_s['offered_discount'].astype(int)
 
-    df_s.to_csv("output/sessions.csv", sep=';', encoding='utf-8', index=False)
-
-    le = preprocessing.LabelEncoder()
-    df_s['category_path'] = le.fit_transform(df_s['category_path'].values)
-    df_s['city'] = le.fit_transform(df_s['city'].values)
     df_s['month'] = pd.DatetimeIndex(df_s['timestamp']).month
     df_s['day'] = pd.DatetimeIndex(df_s['timestamp']).day
     df_s['weekDay'] = pd.DatetimeIndex(df_s['timestamp']).weekday
     df_s['hour'] = pd.DatetimeIndex(df_s['timestamp']).hour
 
     df_s = df_s.drop(['timestamp'], axis=1)
-
     df_s = add_is_buy(df_s)
+
+    df_s = df_s[['session_id', 'price', 'offered_discount', 'category_path', 'city', 'month', 'day',
+                 'weekDay', 'hour', 'is_buy']]
+    df_s.to_csv("output/sessions.csv", sep=';', encoding='utf-8', index=False)
+
+    le = preprocessing.LabelEncoder()
+    df_s['offered_discount'] = le.fit_transform(df_s['offered_discount'].values)
+    df_s['category_path'] = le.fit_transform(df_s['category_path'].values)
+    df_s['city'] = le.fit_transform(df_s['city'].values)
+    df_s['month'] = le.fit_transform(df_s['month'].values)
+    df_s['day'] = le.fit_transform(df_s['day'].values)
+    df_s['weekDay'] = le.fit_transform(df_s['weekDay'].values)
+    df_s['hour'] = le.fit_transform(df_s['hour'].values)
+
+    df_s.to_csv("output/sessions_encoded.csv", sep=';', encoding='utf-8', index=False)
 
     # with pd.option_context('display.max_columns', None):
     #     print(df_s)
@@ -142,9 +151,9 @@ def display_mutual_info(df, column_name, column_w_nan):
     df_X2 = df_na[[column_w_nan, rest_columns[1]]].copy()
 
     mis = feature_selection.mutual_info_classif(df_X, df_y.values.flatten().reshape(-1, ),
-                                                discrete_features=[1, 0]).tolist()
+                                                discrete_features=[0]).tolist()
     mis2 = feature_selection.mutual_info_classif(df_X2, df_y2.values.flatten().reshape(-1, ),
-                                                 discrete_features=[1, 0]).tolist()
+                                                 discrete_features=[0]).tolist()
     mis.append(mis2[0])
 
     noises_sum = [0, 0, 0]
@@ -155,9 +164,9 @@ def display_mutual_info(df, column_name, column_w_nan):
         df_y['checkMCAR'] = np.random.permutation(df_y['checkMCAR'].values)
         df_y2['checkMCAR'] = np.random.permutation(df_y2['checkMCAR'].values)
         noises = feature_selection.mutual_info_classif(df_X, df_y.values.flatten().reshape(-1, ),
-                                                       discrete_features=[1, 0]).tolist()
+                                                       discrete_features=[0]).tolist()
         noises2 = feature_selection.mutual_info_classif(df_X2, df_y2.values.flatten().reshape(-1, ),
-                                                        discrete_features=[1, 0]).tolist()
+                                                        discrete_features=[0]).tolist()
         noises.append(noises2[0])
         noises_sum = [a + b for a, b in zip(noises, noises_sum)]  # add lists element-wise
     noises_avg = [a / average_over for a in noises_sum]

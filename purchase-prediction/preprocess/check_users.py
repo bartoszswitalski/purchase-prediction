@@ -8,7 +8,7 @@
     Faculty of Electronics and Information Technology
 """
 from preprocess.json_read import get_jsonl_data
-from utils import check_if_empty, check_if_unique_values, check_if_numeric, check_range, plot_histogram
+from preprocess.utils import check_if_empty, check_if_unique_values, check_if_numeric, check_range, plot_histogram
 
 import pandas as pd
 
@@ -38,6 +38,3 @@ def users_check():
 
     df = df.drop(['name', 'street'], axis=1)
     df.to_csv("output/users.csv", sep=';', encoding='utf-8', index=False)
-
-    return df
-
