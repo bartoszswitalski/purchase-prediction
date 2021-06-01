@@ -49,7 +49,7 @@ def sessions_check():
     print('{session_id}')
     check_if_empty(df_s, 'session_id')
     check_if_numeric(df_s, 'session_id')
-    check_range(df_s, 100001, 110151, 'session_id')
+    check_range(df_s, 100001, 120000, 'session_id')
 
     print('{timestamp}')
     check_if_empty(df_s, 'timestamp')

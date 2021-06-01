@@ -18,7 +18,7 @@ import numpy as np
 import seaborn as sb
 import matplotlib.pyplot as plt
 
-from utils import SEED, check_if_empty, check_if_unique_values, check_if_numeric, \
+from preprocess.utils import SEED, check_if_empty, check_if_unique_values, check_if_numeric, \
     check_range, check_if_float, check_if_string, check_boxplot, delete_invalid_values
 
 

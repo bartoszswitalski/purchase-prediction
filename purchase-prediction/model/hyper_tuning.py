@@ -10,6 +10,7 @@
 from model.model import build_hyper_model
 
 import kerastuner as kt
+import tensorflow as tf
 
 
 def tune_params(X_train_enc, X_test_enc, y_train_enc, y_test_enc):
@@ -20,8 +21,10 @@ def tune_params(X_train_enc, X_test_enc, y_train_enc, y_test_enc):
     )
 
     print(tuner.search_space_summary())
+
     tuner.search(X_train_enc, y_train_enc,
                  epochs=50,
+                 # callbacks=[[tf.keras.callbacks.EarlyStopping(monitor='val_loss',  patience=5)]],
                  validation_data=(X_test_enc, y_test_enc))
 
     best_model = tuner.get_best_models(1)[0]
