@@ -147,6 +147,13 @@ class DeepModel:
         :param y_test_enc: test targets
         :return: none
         """
+        print('\n-----------\n')
+        print(type(X_train_enc))
+        print(type(y_train_enc))
+
+        print(X_train_enc)
+        print(y_train_enc)
+        print('\n-----------\n')
         # fit the keras model on the dataset
         model.fit(X_train_enc, y_train_enc, epochs=300, batch_size=128, verbose=2)
         # evaluate the keras model

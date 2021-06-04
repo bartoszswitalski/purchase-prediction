@@ -1,5 +1,3 @@
-import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 from utils.csv_read import get_csv_data
@@ -12,8 +10,6 @@ def load_dataset(directory, filename):
     data = data.drop(['session_id'], axis=1)
     # retrieve numpy array
     dataset = data.values
-    print(dataset)
-    print(dataset.shape)
     # split into input (X) and output (Y) variables
     X = dataset[:, :-1]
     Y = dataset[:, -1]
