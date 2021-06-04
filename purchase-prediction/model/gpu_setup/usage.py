@@ -1,12 +1,3 @@
-"""
-    Name: main.py
-    Purpose:
-
-    @author Bartosz Świtalski, Piotr Frątczak
-
-    Warsaw University of Technology
-    Faculty of Electronics and Information Technology
-"""
 import tensorflow as tf
 
 

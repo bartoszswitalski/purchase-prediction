@@ -1,17 +1,8 @@
-"""
-    Name: check_sessions.py
-    Purpose: sessions.jsonl data validity check
-
-    @author Bartosz Świtalski, Piotr Frątczak
-
-    Warsaw University of Technology
-    Faculty of Electronics and Information Technology
-"""
 from sklearn import feature_selection, preprocessing
 
-from preprocess.json_read import get_jsonl_data
-from preprocess.csv_read import get_csv_data
-from preprocess.utils import SEED, check_if_empty, check_if_numeric, check_range, check_timestamp, check_event_type, \
+from utils.json_read import get_jsonl_data
+from utils.csv_read import get_csv_data
+from utils import SEED, check_if_empty, check_if_numeric, check_range, check_timestamp, check_event_type, \
     delete_nulls, fix_null_user_ids, delete_constraints_violations, count_sessions_by_purchase, \
     add_is_buy, session_mutual_info_for_input, check_constraints
 

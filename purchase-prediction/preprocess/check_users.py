@@ -1,14 +1,5 @@
-"""
-    Name: check_users.py
-    Purpose: users.jsonl data validity check
-
-    @author Bartosz Świtalski, Piotr Frątczak
-
-    Warsaw University of Technology
-    Faculty of Electronics and Information Technology
-"""
-from preprocess.json_read import get_jsonl_data
-from preprocess.utils import check_if_empty, check_if_unique_values, check_if_numeric, check_range, plot_histogram
+from utils.json_read import get_jsonl_data
+from utils import check_if_empty, check_if_unique_values, check_if_numeric, check_range, plot_histogram
 
 import pandas as pd
 

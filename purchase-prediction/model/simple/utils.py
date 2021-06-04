@@ -1,19 +1,10 @@
-"""
-    Name: padding.py
-    Purpose: sessions.csv data aggregation for neural network input
-
-    @author Bartosz Świtalski, Piotr Frątczak
-
-    Warsaw University of Technology
-    Faculty of Electronics and Information Technology
-"""
+import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-from model.padding import get_padded_sessions
-from preprocess.csv_read import get_csv_data
+from utils.csv_read import get_csv_data
 
 
-# load the dataset
 def load_dataset(directory, filename):
     # load the dataset as a pandas DataFrame
     data = get_csv_data(directory, filename)
@@ -21,6 +12,8 @@ def load_dataset(directory, filename):
     data = data.drop(['session_id'], axis=1)
     # retrieve numpy array
     dataset = data.values
+    print(dataset)
+    print(dataset.shape)
     # split into input (X) and output (Y) variables
     X = dataset[:, :-1]
     Y = dataset[:, -1]
@@ -30,20 +23,6 @@ def load_dataset(directory, filename):
     return X, Y
 
 
-def load_sequential_dataset(directory, filename):
-    # get padded sessions data
-    sessions_data = get_padded_sessions(directory, filename)
-
-    # split into input (X) and output (Y) variables
-    X = sessions_data[:, 1:-1]
-    Y = sessions_data[:, -1]
-    # reshape target to be a 2d array
-    Y = Y.reshape((len(Y), 1))
-
-    return X, Y
-
-
-# prepare input data
 def prepare_inputs(X_train, X_test):
     X_train_enc, X_test_enc = list(), list()
     # append first column that will not be encoded
@@ -63,21 +42,9 @@ def prepare_inputs(X_train, X_test):
     X_train_enc[0] = X_train_enc[0].astype('float32')
     X_test_enc[0] = X_test_enc[0].astype('float32')
 
-    # print(X_train_enc)
-    # print(X_test_enc)
-
     return X_train_enc, X_test_enc
 
 
-def reshape_sequential_inputs(X_train, X_test):
-    return X_train.T, X_test.T
-
-
-def reshape_sequential_targets(y_train, y_test):
-    return y_train, y_test
-
-
-# prepare target
 def prepare_targets(y_train, y_test):
     le = LabelEncoder()
     le.fit(y_train)

@@ -1,12 +1,3 @@
-"""
-    Name: utils.py
-    Purpose: utility functions for various data checks
-
-    @author Bartosz Świtalski, Piotr Frątczak
-
-    Warsaw University of Technology
-    Faculty of Electronics and Information Technology
-"""
 from pandas.core.dtypes.common import is_numeric_dtype, is_string_dtype
 
 import pandas as pd
