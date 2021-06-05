@@ -28,9 +28,9 @@
                                     Price
                                     <input name="price" type="number" min="0" step="0.01" required>
                                 </label>
-                                <label>
-                                    Offered discount
-                                    <input name="offered_discount" type="number" min="0" max="100" required>
+                                <label class="percent">
+                                    Offered Discount
+                                    <input name="offered_discount" type="number" min="0" max="100" step="0.01" required>
                                 </label>
                                 <label>
                                     Category
@@ -82,18 +82,24 @@
 			<section id="one" class="wrapper style2 special">
 				<header class="major">
 					<h2>Result</h2>
-                    <div class="result">
-                        {% if result %}
-                            {% for variable, value in original_input.items() %}
-                                <b>{{ variable }}</b> : {{ value }}
-                            {% endfor %}
-                            <br>
-                            <br> Purchase prediction:
-                               <p style="font-size:50px">{{ result }}</p>
+                    {% if result %}
+                        {% for variable, value in original_input.items() %}
+                            <b>{{ variable }}</b> : {{ value }}
+                        {% endfor %}
+
+                        <br><br>
+
+                        <h3>Purchase prediction:</h3>
+                        <h2><b>{{ result }}</b></h2>
+
+                        {% if result >= 0.5 %}
+                            <b id="prediction-purchase">Purchase</b>
                         {% else %}
-                            Run a prediction before you can see the results.
+                            <b id="prediction-no-purchase">No Purchase</b>
                         {% endif %}
-                    </div>
+                    {% else %}
+                        Run a prediction before you can see the results.
+                    {% endif %}
                 </header>
 				<ul class="icons major">
 					<li><span class="icon solid fa-shopping-cart"></span></li>
@@ -109,22 +115,27 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th>Prediction Time</th>
                                     <th>Price</th>
+                                    <th>Offered Discount</th>
+                                    <th>Category</th>
+                                    <th>City</th>
+                                    <th>Date</th>
+                                    <th>Prediction</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Item One</td>
-                                    <td>Ante turpis integer aliquet porttitor.</td>
-                                    <td>29.99</td>
-                                </tr>
-                                <tr>
-                                    <td>Item Two</td>
-                                    <td>Vis ac commodo adipiscing arcu aliquet.</td>
-                                    <td>19.99</td>
-                                </tr>
+                                {% for prediction in prediction_log %}
+                                    <tr>
+                                        <td>{{ prediction.time }}</td>
+                                        <td>{{ prediction.price }}</td>
+                                        <td>{{ prediction.offered_discount }}%</td>
+                                        <td>{{ prediction.category_path }}</td>
+                                        <td>{{ prediction.city }}</td>
+                                        <td>{{ prediction.date }}</td>
+                                        <td><b>{{ prediction.result }}</b></td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -162,8 +173,8 @@
 					<h2>About The Model</h2>
 					<p>The model was created for the Machine Learning Engineering course at WUT.</p>
 				</header>
-				<ul class="actions special">
-					<li><a href="https://github.com/bartoszswitalski/purchase-prediction" class="button">Learn More</a></li>
+				<ul class="icons">
+					<li><a href="https://github.com/bartoszswitalski/purchase-prediction" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
 				</ul>
 			</section>
 
@@ -488,9 +499,6 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 
 		<!-- Footer -->
 			<footer id="footer">
-				<ul class="icons">
-					<li><a href="https://github.com/bartoszswitalski/purchase-prediction" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-				</ul>
                 <ul class="copyright">
                     <li>&copy; Warsaw University of Technology</li> <li>Design credits: <a href="http://html5up.net">HTML5 UP</a></li>
                 </ul>
