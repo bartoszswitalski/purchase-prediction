@@ -3,15 +3,18 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
 from utils.csv_read import get_csv_data
+from model.gru.aggregate import get_aggregated_sessions
 
 
 def load_sequential_dataset(directory, filename):
-    # load the dataset as a pandas DataFrame
-    data = get_csv_data(directory, filename)
-    # drop duplicated session entries
-    data = data.drop_duplicates()
+    # # load the dataset as a pandas DataFrame
+    # data = get_csv_data(directory, filename)
+    # # drop duplicated session entries
+    # data = data.drop_duplicates()
+    # load the dataset as pandas DataFrame having aggregated it beforehand
+    data = get_aggregated_sessions(directory, filename)
     # save to csv
-    data.to_csv('model/gru/data_without_duplicates', sep=';', encoding='utf-8', index=False)
+    data.to_csv('output/data_aggregated_without_duplicates', sep=';', encoding='utf-8', index=False)
     # get padded sessions data
     data_padded = pad_data(data)
     # delete duplicates
@@ -40,15 +43,15 @@ def pad_data(data):
         dataset[i] = dataset[i].tolist()
         for j in range(len(dataset[i])):
             dataset[i][j] = dataset[i][j][1:-1]
-        if len(dataset[i]) < 11:
-            for _ in range(11 - len(dataset[i])):
+        if len(dataset[i]) < 4:
+            for _ in range(4 - len(dataset[i])):
                 dataset[i].append(dummy)
         dataset[i] = np.append(dataset[i], y)
 
     dataset = np.asarray(dataset)
 
     df = pd.DataFrame(dataset)
-    # df.to_csv('output/sessions_sequenced.csv', sep=';', encoding='utf-8', index=False)
+    df.to_csv('output/sessions_sequenced.csv', sep=';', encoding='utf-8', index=False)
 
     return df
 
@@ -57,12 +60,15 @@ def prepare_inputs_for_sequential(X_train, X_test):
     X_train_enc, X_test_enc = list(), list()
 
     # append first column that will not be encoded
-    for i in range(11):
+    for i in range(4):
         X_train_enc.append(X_train[:, i * 8])
+        X_train_enc.append(X_train[:, 1 + i * 8])
+
         X_test_enc.append(X_test[:, i * 8])
+        X_test_enc.append(X_test[:, 1 + i * 8])
 
         # label encode every other column
-        for j in range(1, 8):
+        for j in range(2, 8):
             le = LabelEncoder()
             le.fit(X_train[:, i * 8 + j])
             # encode
@@ -73,6 +79,8 @@ def prepare_inputs_for_sequential(X_train, X_test):
             X_test_enc.append(test_enc)
 
         X_train_enc[i * 8] = X_train_enc[i * 8].astype('float32')
+        X_train_enc[1 + i * 8] = X_train_enc[1 + i * 8].astype('float32')
         X_test_enc[i * 8] = X_test_enc[i * 8].astype('float32')
+        X_test_enc[1 + i * 8] = X_test_enc[1 + i * 8].astype('float32')
 
     return X_train_enc, X_test_enc

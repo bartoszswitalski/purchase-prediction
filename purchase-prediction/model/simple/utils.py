@@ -23,11 +23,13 @@ def load_dataset(directory, filename):
 
 def prepare_inputs(X_train, X_test):
     X_train_enc, X_test_enc = list(), list()
-    # append first column that will not be encoded
+    # append first two columns that will not be encoded (price and discount)
     X_train_enc.append(X_train[:, 0])
+    X_train_enc.append(X_train[:, 1])
     X_test_enc.append(X_test[:, 0])
+    X_test_enc.append(X_test[:, 1])
     # label encode every other column
-    for i in range(1, X_train.shape[1]):
+    for i in range(2, X_train.shape[1]):
         le = LabelEncoder()
         le.fit(X_train[:, i])
         # encode
@@ -37,8 +39,11 @@ def prepare_inputs(X_train, X_test):
         X_train_enc.append(train_enc)
         X_test_enc.append(test_enc)
 
+    # not encoded columns
     X_train_enc[0] = X_train_enc[0].astype('float32')
+    X_train_enc[1] = X_train_enc[1].astype('float32')
     X_test_enc[0] = X_test_enc[0].astype('float32')
+    X_test_enc[1] = X_test_enc[1].astype('float32')
 
     return X_train_enc, X_test_enc
 

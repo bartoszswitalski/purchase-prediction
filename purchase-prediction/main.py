@@ -17,9 +17,6 @@ from model.gpu_setup.usage import limit_gpu_usage
 from model.gru.aggregate import get_aggregated_sessions
 
 if __name__ == '__main__':
-
-    get_aggregated_sessions()
-
     """
         uncomment to check data and save to sessions.csv and sessions_encoded.csv
     """
@@ -30,8 +27,8 @@ if __name__ == '__main__':
     """
         uncomment when running the model
     """
-    # # limit GPU usage
-    # limit_gpu_usage()
+    # limit GPU usage
+    limit_gpu_usage()
 
     """
         uncomment to fit basic model
@@ -58,12 +55,12 @@ if __name__ == '__main__':
     """
         uncomment to build sequence model
     """
-    # X_train_enc, _, _, _ = DeepModel.get_dataset()
-    # # get train and test sets
-    # X_train, X_test, y_train, y_test = GRUModel.get_dataset()
-    # # generate input and embedding layers
-    # in_layers, em_layers = GRUModel.get_input_and_embedding_layers(X_train_enc, True)
-    # # build and compile model
-    # model = GRUModel.build(in_layers, em_layers)
-    # # fit model
-    # GRUModel.fit(model, X_train, X_test, y_train, y_test)
+    X_train_enc, _, _, _ = DeepModel.get_dataset()
+    # get train and test sets
+    X_train, X_test, y_train, y_test = GRUModel.get_dataset()
+    # generate input and embedding layers
+    in_layers, em_layers = GRUModel.get_input_and_embedding_layers(X_train_enc, False)
+    # build and compile model
+    model = GRUModel.build(in_layers, em_layers)
+    # fit model
+    GRUModel.fit(model, X_train, X_test, y_train, y_test)

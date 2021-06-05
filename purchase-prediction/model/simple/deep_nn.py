@@ -4,6 +4,7 @@ import kerastuner as kt
 
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
+from tensorflow.python.keras.utils.vis_utils import plot_model
 
 from model.simple.utils import load_dataset, prepare_inputs, prepare_targets
 
@@ -51,11 +52,13 @@ class DeepModel:
         in_layers.append(in_layer_price)
         em_layers.append(in_layer_price)
 
-        for i in range(1, len(X_train_enc)):
-            n_labels = -1
-            if i == 1:  # discount
-                n_labels = 100
-            elif i == 4:  # month
+        # add layer for discount
+        in_layer_discount = tf.keras.layers.Input(shape=(1, 1))
+        in_layers.append(in_layer_discount)
+        em_layers.append(in_layer_discount)
+
+        for i in range(2, len(X_train_enc)):
+            if i == 4:  # month
                 n_labels = 12
             elif i == 5:  # day of the month
                 n_labels = 31
@@ -101,6 +104,9 @@ class DeepModel:
         # compile the keras model
         opt = keras.optimizers.Adam(learning_rate=0.001, epsilon=1e-07)
         model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
+
+        # plot graph
+        plot_model(model, to_file='output/jpg/simple_model.jpg', show_shapes=True)
 
         return model
 
@@ -164,9 +170,6 @@ class DeepModel:
         # evaluate the keras model
         _, accuracy = model.evaluate(X_test_enc, y_test_enc, verbose=0)
         print('Accuracy: %.2f' % (accuracy * 100))
-
-        # plot graph
-        # plot_model(model, to_file='output/model.png', show_shapes=True)
 
     @staticmethod
     def tune(X_train_enc, X_test_enc, y_train_enc, y_test_enc):
