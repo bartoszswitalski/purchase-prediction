@@ -1,5 +1,6 @@
 import flask
 import hashlib
+import pytz
 import numpy as np
 import pandas as pd
 from common import cache
@@ -31,7 +32,10 @@ def main():
         user_id = int(user_str)
         product_id = int(flask.request.form['product_id'])
         offered_discount = float(flask.request.form['offered_discount'])
-        date = datetime.now()
+
+        # get time
+        cet = pytz.timezone('Europe/Warsaw')
+        date = datetime.now(cet)
 
         # process date
         month = date.month
