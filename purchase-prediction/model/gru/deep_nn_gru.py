@@ -17,9 +17,8 @@ class GRUModel:
         X, y = load_sequential_dataset('output/', 'sessions_encoded.csv')
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=1)
-        print(y_test.shape)
 
-        X_train, X_test = prepare_inputs_for_sequential(X_train, X_test)
+        # X_train, X_test = prepare_inputs_for_sequential(X_train, X_test)
         y_train = y_train.reshape((len(y_train), 1, 1))
         y_test = y_test.reshape((len(y_test), 1, 1))
 
@@ -30,90 +29,89 @@ class GRUModel:
         in_layers = list()
         em_layers = list()
 
-        for _ in range(4):
-            # add layer for price
-            in_layer_price = tf.keras.layers.Input(shape=(1, 1))
-            in_layers.append(in_layer_price)
-            em_layers.append(in_layer_price)
+        # for _ in range(4):
+        #     # add layer for price
+        #     in_layer_price = tf.keras.layers.Input(shape=(1, 1))
+        #     in_layers.append(in_layer_price)
+        #     em_layers.append(in_layer_price)
+        #
+        #     # add layer for discount
+        #     in_layer_discount = tf.keras.layers.Input(shape=(1, 1))
+        #     in_layers.append(in_layer_discount)
+        #     em_layers.append(in_layer_discount)
+        #
+        #     for j in range(2, len(X_train_enc)):
+        #         if j == 4:  # month
+        #             n_labels = 12
+        #         elif j == 5:  # day of the month
+        #             n_labels = 31
+        #         elif j == 6:  # day of the week
+        #             n_labels = 7
+        #         elif j == 7:  # hour
+        #             n_labels = 24
+        #         else:
+        #             # calculate the number of unique inputs
+        #             n_labels = len(np.unique(X_train_enc[j]))
+        #         # define input layer
+        #         in_layer = tf.keras.layers.Input(shape=(1,))
+        #         # define embedding layer
+        #         em_layer = tf.keras.layers.Embedding(n_labels, 10, mask_zero=mask_zero)(in_layer)
+        #         # store layers
+        #         in_layers.append(in_layer)
+        #         em_layers.append(em_layer)
 
-            # add layer for discount
-            in_layer_discount = tf.keras.layers.Input(shape=(1, 1))
-            in_layers.append(in_layer_discount)
-            em_layers.append(in_layer_discount)
-
-            for j in range(2, len(X_train_enc)):
-                if j == 4:  # month
-                    n_labels = 12
-                elif j == 5:  # day of the month
-                    n_labels = 31
-                elif j == 6:  # day of the week
-                    n_labels = 7
-                elif j == 7:  # hour
-                    n_labels = 24
-                else:
-                    # calculate the number of unique inputs
-                    n_labels = len(np.unique(X_train_enc[j]))
-                # define input layer
-                in_layer = tf.keras.layers.Input(shape=(1,))
-                # define embedding layer
-                em_layer = tf.keras.layers.Embedding(n_labels, 10, mask_zero=mask_zero)(in_layer)
-                # store layers
-                in_layers.append(in_layer)
-                em_layers.append(em_layer)
-
-        # # add layer for price
-        # in_layer_price = tf.keras.layers.Input(shape=(1, 1))
+        # add layer for price
+        in_layer_price = tf.keras.layers.Input(shape=(1, 1, 4))
         # in_layers.append(in_layer_price)
-        # em_layers.append(in_layer_price)
-        #
-        # # add layer for discount
-        # in_layer_discount = tf.keras.layers.Input(shape=(1, 1))
-        # in_layers.append(in_layer_discount)
-        # em_layers.append(in_layer_discount)
-        #
-        # for j in range(2, len(X_train_enc)):
-        #     if j == 4:  # month
-        #         n_labels = 12
-        #     elif j == 5:  # day of the month
-        #         n_labels = 31
-        #     elif j == 6:  # day of the week
-        #         n_labels = 7
-        #     elif j == 7:  # hour
-        #         n_labels = 24
-        #     else:
-        #         # calculate the number of unique inputs
-        #         n_labels = len(np.unique(X_train_enc[j]))
-        #     # define input layer
-        #     in_layer = tf.keras.layers.Input(shape=(1,))
-        #     # define embedding layer
-        #     em_layer = tf.keras.layers.Embedding(n_labels, 10, mask_zero=mask_zero)(in_layer)
-        #     # store layers
-        #     in_layers.append(in_layer)
-        #     em_layers.append(em_layer)
+        em_layers.append(in_layer_price)
 
-        return in_layers, em_layers
+        # add layer for discount
+        in_layer_discount = tf.keras.layers.Input(shape=(1, 1, 4))
+        # in_layers.append(in_layer_discount)
+        em_layers.append(in_layer_discount)
+
+        in_layer = tf.keras.layers.Input(shape=(1, 8, 4))
+
+        for j in range(2, len(X_train_enc)):
+            if j == 4:  # month
+                n_labels = 12
+            elif j == 5:  # day of the month
+                n_labels = 31
+            elif j == 6:  # day of the week
+                n_labels = 7
+            elif j == 7:  # hour
+                n_labels = 24
+            else:
+                # calculate the number of unique inputs
+                n_labels = len(np.unique(X_train_enc[j]))
+            # define input layer
+            # in_layer = tf.keras.layers.Input(shape=(1, 4))
+            # define embedding layer
+            em_layer = tf.keras.layers.Embedding(n_labels, 10, input_length=4)(in_layer)
+            # store layers
+            # in_layers.append(in_layer)
+            em_layers.append(em_layer)
+
+        return in_layer, em_layers
 
     @staticmethod
     def build(in_layers, em_layers):
         # concat all layers(price + embeddings)
-        merge = tf.keras.layers.concatenate(axis=-1, inputs=em_layers)
-        # dense = tf.keras.layers.GRU(248, activation='relu', kernel_initializer='he_normal')(merge)
-        dense = tf.compat.v1.keras.layers.CuDNNGRU(248,
-                                                   recurrent_regularizer=tf.keras.regularizers.L2(0.01),
-                                                   activity_regularizer=tf.keras.regularizers.L2(0.01))(merge)
-        # dense = tf.keras.layers.Dense(10, activation='relu', kernel_initializer='he_normal')(dense)
-        # dense = tf.keras.layers.Dense(12, activation='relu', kernel_initializer='he_normal')(dense)
-        # dense = tf.keras.layers.Dense(6, activation='relu', kernel_initializer='he_normal')(dense)
+        # merge = tf.keras.layers.concatenate(axis=1, inputs=em_layers)
+        inputs = tf.keras.layers.Input(shape=(4, 8))
+        mask = tf.keras.layers.Masking(mask_value=0)(inputs)
+        dense = tf.compat.v1.keras.layers.GRU(248,
+                                              recurrent_regularizer=tf.keras.regularizers.L2(0.01),
+                                              activity_regularizer=tf.keras.regularizers.L2(0.01)
+                                              )(mask)
         output = tf.keras.layers.Dense(1, activation='sigmoid')(dense)
-        model = tf.keras.Model(inputs=in_layers, outputs=output)
-
-        # print(model.summary())
+        model = tf.keras.Model(inputs=inputs, outputs=output)
 
         plot_model(model, to_file='output/jpg/gru_model.jpg', show_shapes=True)
-
         # compile the keras model
         opt = keras.optimizers.Adam(learning_rate=0.001, epsilon=1e-07)
         model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
+        print(model.summary())
 
         return model
 

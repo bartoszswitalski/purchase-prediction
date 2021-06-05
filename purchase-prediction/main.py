@@ -27,22 +27,22 @@ if __name__ == '__main__':
     """
         uncomment when running the model
     """
-    # limit GPU usage
-    limit_gpu_usage()
+    # # limit GPU usage
+    # limit_gpu_usage()
 
     """
         uncomment to fit basic model
     """
-    # get train and test sets
-    X_train_enc, X_test_enc, y_train_enc, y_test_enc = DeepModel.get_dataset()
-    # generate input and embedding layers
-    in_layers, em_layers = DeepModel.get_input_and_embedding_layers(X_train_enc)
-    # build model
-    model = DeepModel.build(in_layers, em_layers)
-    # fit model
-    DeepModel.fit(model, X_train_enc, X_test_enc, y_train_enc, y_test_enc)
-    # test prediction
-    DeepModel.test_predict(model)
+    # # get train and test sets
+    # X_train_enc, X_test_enc, y_train_enc, y_test_enc = DeepModel.get_dataset()
+    # # generate input and embedding layers
+    # in_layers, em_layers = DeepModel.get_input_and_embedding_layers(X_train_enc)
+    # # build model
+    # model = DeepModel.build(in_layers, em_layers)
+    # # fit model
+    # DeepModel.fit(model, X_train_enc, X_test_enc, y_train_enc, y_test_enc)
+    # # test prediction
+    # DeepModel.test_predict(model)
 
     """
         uncomment to tune parameters 
@@ -55,12 +55,15 @@ if __name__ == '__main__':
     # """
     #     uncomment to build sequence model
     # """
-    # X_train_enc, _, _, _ = DeepModel.get_dataset()
-    # # get train and test sets
-    # X_train, X_test, y_train, y_test = GRUModel.get_dataset()
+    X_train_enc, _, _, _ = DeepModel.get_dataset()
+    # get train and test sets
+    X_train, X_test, y_train, y_test = GRUModel.get_dataset()
+    print('\n---------\n')
+    print(X_train)
+    print('\n---------\n')
     # # generate input and embedding layers
     # in_layers, em_layers = GRUModel.get_input_and_embedding_layers(X_train_enc, False)
-    # # build and compile model
-    # model = GRUModel.build(in_layers, em_layers)
+    # build and compile model
+    model = GRUModel.build(_, _)
     # # fit model
-    # GRUModel.fit(model, X_train, X_test, y_train, y_test)
+    GRUModel.fit(model, X_train, X_test, y_train, y_test)
