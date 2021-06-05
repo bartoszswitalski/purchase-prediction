@@ -2680,7 +2680,7 @@ input, select, textarea {
 		}
 
 			ul.icons.labeled li {
-				display: block;
+				display: inline-block;
 				padding: 0;
 				margin: 1.5em 0 0 0;
 			}
@@ -3715,6 +3715,10 @@ input, select, textarea {
 			display: flex;
 			justify-content: center;
 		}
+
+			#header .submit-button input[type="submit"] {
+				width: 8em;
+			}
 
 		#header input[type="submit"],
 		#header input[type="reset"],

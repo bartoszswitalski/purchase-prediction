@@ -4,3 +4,5 @@ numpy
 tensorflow-cpu
 datetime
 gunicorn
+json-lines
+pandas
