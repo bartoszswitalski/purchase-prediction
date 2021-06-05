@@ -61,6 +61,36 @@ class GRUModel:
                 in_layers.append(in_layer)
                 em_layers.append(em_layer)
 
+        # # add layer for price
+        # in_layer_price = tf.keras.layers.Input(shape=(1, 1))
+        # in_layers.append(in_layer_price)
+        # em_layers.append(in_layer_price)
+        #
+        # # add layer for discount
+        # in_layer_discount = tf.keras.layers.Input(shape=(1, 1))
+        # in_layers.append(in_layer_discount)
+        # em_layers.append(in_layer_discount)
+        #
+        # for j in range(2, len(X_train_enc)):
+        #     if j == 4:  # month
+        #         n_labels = 12
+        #     elif j == 5:  # day of the month
+        #         n_labels = 31
+        #     elif j == 6:  # day of the week
+        #         n_labels = 7
+        #     elif j == 7:  # hour
+        #         n_labels = 24
+        #     else:
+        #         # calculate the number of unique inputs
+        #         n_labels = len(np.unique(X_train_enc[j]))
+        #     # define input layer
+        #     in_layer = tf.keras.layers.Input(shape=(1,))
+        #     # define embedding layer
+        #     em_layer = tf.keras.layers.Embedding(n_labels, 10, mask_zero=mask_zero)(in_layer)
+        #     # store layers
+        #     in_layers.append(in_layer)
+        #     em_layers.append(em_layer)
+
         return in_layers, em_layers
 
     @staticmethod
@@ -71,7 +101,6 @@ class GRUModel:
         dense = tf.compat.v1.keras.layers.CuDNNGRU(248,
                                                    recurrent_regularizer=tf.keras.regularizers.L2(0.01),
                                                    activity_regularizer=tf.keras.regularizers.L2(0.01))(merge)
-        dense = tf.keras.layers.Dropout(0.5)(dense)
         # dense = tf.keras.layers.Dense(10, activation='relu', kernel_initializer='he_normal')(dense)
         # dense = tf.keras.layers.Dense(12, activation='relu', kernel_initializer='he_normal')(dense)
         # dense = tf.keras.layers.Dense(6, activation='relu', kernel_initializer='he_normal')(dense)
@@ -91,7 +120,7 @@ class GRUModel:
     @staticmethod
     def fit(model, X_train, X_test, y_train, y_test):
         # fit the keras model on the dataset
-        model.fit(X_train, y_train, epochs=300, batch_size=32, verbose=2)
+        model.fit(X_train, y_train, epochs=50, batch_size=32, verbose=2)
 
         # evaluate the keras model
         _, accuracy = model.evaluate(X_test, y_test, verbose=0)

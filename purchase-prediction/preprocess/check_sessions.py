@@ -2,7 +2,7 @@ from sklearn import feature_selection, preprocessing
 
 from utils.json_read import get_jsonl_data
 from utils.csv_read import get_csv_data
-from utils import SEED, check_if_empty, check_if_numeric, check_range, check_timestamp, check_event_type, \
+from preprocess.utils import SEED, check_if_empty, check_if_numeric, check_range, check_timestamp, check_event_type, \
     delete_nulls, fix_null_user_ids, delete_constraints_violations, count_sessions_by_purchase, \
     add_is_buy, session_mutual_info_for_input, check_constraints
 
@@ -85,7 +85,7 @@ def sessions_check():
     check_event_type(df_s)
     count_sessions_by_purchase(df_s)
 
-    df_s['offered_discount'] = df_s['offered_discount'].astype(int)
+    # df_s['offered_discount'] = df_s['offered_discount'].astype(float)
 
     df_s['month'] = pd.DatetimeIndex(df_s['timestamp']).month
     df_s['day'] = pd.DatetimeIndex(df_s['timestamp']).day
@@ -100,7 +100,7 @@ def sessions_check():
     df_s.to_csv("output/sessions.csv", sep=';', encoding='utf-8', index=False)
 
     le = preprocessing.LabelEncoder()
-    df_s['offered_discount'] = le.fit_transform(df_s['offered_discount'].values)
+    # df_s['offered_discount'] = le.fit_transform(df_s['offered_discount'].values)
     df_s['category_path'] = le.fit_transform(df_s['category_path'].values)
     df_s['city'] = le.fit_transform(df_s['city'].values)
     df_s['month'] = le.fit_transform(df_s['month'].values)

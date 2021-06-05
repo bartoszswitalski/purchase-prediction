@@ -13,6 +13,7 @@ def load_sequential_dataset(directory, filename):
     # data = data.drop_duplicates()
     # load the dataset as pandas DataFrame having aggregated it beforehand
     data = get_aggregated_sessions(directory, filename)
+    print(data)
     # save to csv
     data.to_csv('output/data_aggregated_without_duplicates', sep=';', encoding='utf-8', index=False)
     # get padded sessions data
