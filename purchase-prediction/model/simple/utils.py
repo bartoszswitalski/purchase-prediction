@@ -6,6 +6,8 @@ from utils.csv_read import get_csv_data
 def load_dataset(directory, filename):
     # load the dataset as a pandas DataFrame
     data = get_csv_data(directory, filename)
+    # drop duplicated session entries
+    data = data.drop_duplicates()
     # drop session_id column
     data = data.drop(['session_id'], axis=1)
     # retrieve numpy array

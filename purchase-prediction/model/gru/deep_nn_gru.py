@@ -29,15 +29,26 @@ class GRUModel:
         in_layers = list()
         em_layers = list()
 
-        for i in range(11):
+        for j in range(11):
             # add layer for price
             in_layer_price = tf.keras.layers.Input(shape=(1, 1))
             in_layers.append(in_layer_price)
             em_layers.append(in_layer_price)
 
             for j in range(1, len(X_train_enc)):
-                # calculate the number of unique inputs
-                n_labels = len(np.unique(X_train_enc[j]))
+                if j == 1:  # discount
+                    n_labels = 100
+                elif j == 4:  # month
+                    n_labels = 12
+                elif j == 5:  # day of the month
+                    n_labels = 31
+                elif j == 6:  # day of the week
+                    n_labels = 7
+                elif j == 7:  # hour
+                    n_labels = 24
+                else:
+                    # calculate the number of unique inputs
+                    n_labels = len(np.unique(X_train_enc[j]))
                 # define input layer
                 in_layer = tf.keras.layers.Input(shape=(1,))
                 # define embedding layer
@@ -64,7 +75,7 @@ class GRUModel:
         plot_model(model, to_file='model/gru/model.jpg', show_shapes=True)
 
         # compile the keras model
-        opt = keras.optimizers.Adam(learning_rate=0.001, epsilon=1e-07)
+        opt = keras.optimizers.Adam(learning_rate=0.01, epsilon=1e-07)
         model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
 
         return model
@@ -72,7 +83,7 @@ class GRUModel:
     @staticmethod
     def fit(model, X_train, X_test, y_train, y_test):
         # fit the keras model on the dataset
-        model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=2)
+        model.fit(X_train, y_train, epochs=20, batch_size=32, verbose=2)
 
         # evaluate the keras model
         _, accuracy = model.evaluate(X_test, y_test, verbose=0)

@@ -14,8 +14,11 @@
 from model.simple.deep_nn import DeepModel
 from model.gru.deep_nn_gru import GRUModel
 from model.gpu_setup.usage import limit_gpu_usage
+from model.gru.aggregate import get_aggregated_sessions
 
 if __name__ == '__main__':
+
+    get_aggregated_sessions()
 
     """
         uncomment to check data and save to sessions.csv and sessions_encoded.csv
@@ -27,22 +30,22 @@ if __name__ == '__main__':
     """
         uncomment when running the model
     """
-    # limit GPU usage
-    limit_gpu_usage()
+    # # limit GPU usage
+    # limit_gpu_usage()
 
     """
         uncomment to fit basic model
     """
-    # get train and test sets
-    X_train_enc, X_test_enc, y_train_enc, y_test_enc = DeepModel.get_dataset()
-    # generate input and embedding layers
-    in_layers, em_layers = DeepModel.get_input_and_embedding_layers(X_train_enc)
-    # build model
-    model = DeepModel.build(in_layers, em_layers)
-    # fit model
-    DeepModel.fit(model, X_train_enc, X_test_enc, y_train_enc, y_test_enc)
-    # test prediction
-    DeepModel.test_predict(model)
+    # # get train and test sets
+    # X_train_enc, X_test_enc, y_train_enc, y_test_enc = DeepModel.get_dataset()
+    # # generate input and embedding layers
+    # in_layers, em_layers = DeepModel.get_input_and_embedding_layers(X_train_enc)
+    # # build model
+    # model = DeepModel.build(in_layers, em_layers)
+    # # fit model
+    # DeepModel.fit(model, X_train_enc, X_test_enc, y_train_enc, y_test_enc)
+    # # test prediction
+    # DeepModel.test_predict(model)
 
     """
         uncomment to tune parameters 

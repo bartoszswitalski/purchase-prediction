@@ -52,8 +52,20 @@ class DeepModel:
         em_layers.append(in_layer_price)
 
         for i in range(1, len(X_train_enc)):
-            # calculate the number of unique inputs
-            n_labels = len(np.unique(X_train_enc[i]))
+            n_labels = -1
+            if i == 1:  # discount
+                n_labels = 100
+            elif i == 4:  # month
+                n_labels = 12
+            elif i == 5:  # day of the month
+                n_labels = 31
+            elif i == 6:  # day of the week
+                n_labels = 7
+            elif i == 7:  # hour
+                n_labels = 24
+            else:
+                # calculate the number of unique inputs
+                n_labels = len(np.unique(X_train_enc[i]))
             # define input layer
             in_layer = tf.keras.layers.Input(shape=(1,))
             # define embedding layer

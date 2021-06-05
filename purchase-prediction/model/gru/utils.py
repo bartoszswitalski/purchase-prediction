@@ -8,8 +8,9 @@ from utils.csv_read import get_csv_data
 def load_sequential_dataset(directory, filename):
     # load the dataset as a pandas DataFrame
     data = get_csv_data(directory, filename)
+    # drop duplicated session entries
     data = data.drop_duplicates()
-    print(data)
+    # save to csv
     data.to_csv('model/gru/data_without_duplicates', sep=';', encoding='utf-8', index=False)
     # get padded sessions data
     data_padded = pad_data(data)
