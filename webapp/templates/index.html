@@ -10,6 +10,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="../static/assets/css/main.css" />
+        <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 		<noscript><link rel="stylesheet" href="../static/assets/css/noscript.css" /></noscript>
 	</head>
 	<body class="is-preload">
@@ -87,7 +88,7 @@
                                 <b>{{ variable }}</b> : {{ value }}
                             {% endfor %}
                             <br>
-                            <br> Predicted number of bikes in use:
+                            <br> Purchase prediction:
                                <p style="font-size:50px">{{ result }}</p>
                         {% else %}
                             Run a prediction before you can see the results.
