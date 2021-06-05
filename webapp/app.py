@@ -1,14 +1,15 @@
 import flask
-from common import cache
+import hashlib
 import numpy as np
 import pandas as pd
+from common import cache
 from tensorflow import keras
 from datetime import datetime
 from utils.dictionaries import cities, categories
 
 
 # load model
-model = keras.models.load_model('model')
+modelA = keras.models.load_model('model')
 
 app = flask.Flask(__name__, template_folder='templates')
 
@@ -26,7 +27,8 @@ def main():
     if flask.request.method == 'POST':
 
         # fetch data from the form
-        user_id = int(flask.request.form['user_id'])
+        user_str = flask.request.form['user_id']
+        user_id = int(user_str)
         product_id = int(flask.request.form['product_id'])
         offered_discount = float(flask.request.form['offered_discount'])
         date = datetime.now()
@@ -59,6 +61,17 @@ def main():
         for i in range(8):
             predict_data.append(data[:, i])
 
+        # choose model based on user's id
+        if int(hashlib.sha256(user_str.encode('utf-8')).hexdigest(), 16) % 2 == 0:
+            model = modelA
+            model_str = 'A'
+        else:
+            model = modelA  # TODO: change to modelB
+            model_str = 'B'
+
+        # log which model was chosen
+        print('User ID: {} - Model: {}'.format(user_str, model_str))
+
         # predict
         prediction = model.predict(predict_data)[0][0][0]
 
@@ -73,7 +86,7 @@ def main():
             'category_path': category_path_str,
             'city': city_str,
             'date': f"{date:%Y-%m-%d %H:%M}",
-            'model': 'A',
+            'model': model_str,
             'result': prediction,
             'is_buy': 'Yes' if prediction >= 0.5 else 'No'
         })
