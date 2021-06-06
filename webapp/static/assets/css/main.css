@@ -3720,6 +3720,10 @@ input, select, textarea {
 				width: 8em;
 			}
 
+			.button {
+				width: 8em;
+			}
+
 		#header input[type="submit"],
 		#header input[type="reset"],
 		#header input[type="button"],

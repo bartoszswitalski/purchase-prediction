@@ -1,6 +1,7 @@
 import flask
-import hashlib
+import csv
 import pytz
+import hashlib
 import numpy as np
 import pandas as pd
 from common import cache
@@ -9,8 +10,9 @@ from datetime import datetime
 from utils.dictionaries import cities, categories
 
 
-# load model
-modelA = keras.models.load_model('model')
+# load models
+modelA = keras.models.load_model('model/modelA')
+modelB = keras.models.load_model('model/modelB')
 
 app = flask.Flask(__name__, template_folder='templates')
 
@@ -65,19 +67,16 @@ def main():
         for i in range(8):
             predict_data.append(data[:, i])
 
-        # choose model based on user's id
+        # choose model based on user's id and run prediction
         if int(hashlib.sha256(user_str.encode('utf-8')).hexdigest(), 16) % 2 == 0:
-            model = modelA
+            prediction = modelA.predict(predict_data)[0][0][0]
             model_str = 'A'
         else:
-            model = modelA  # TODO: change to modelB
+            prediction = modelB.predict(predict_data)[0][0]
             model_str = 'B'
 
         # log which model was chosen
         print('User ID: {} - Model: {}'.format(user_str, model_str))
-
-        # predict
-        prediction = model.predict(predict_data)[0][0][0]
 
         # prepare log
         prediction_log = cache.get('log')
@@ -101,6 +100,20 @@ def main():
                                      prediction_log=prediction_log,
                                      result=prediction,
                                      )
+
+
+@app.route('/downloads/<path:filename>', methods=['GET'])
+def download(filename):
+    prediction_log = cache.get('log')
+    if len(prediction_log) == 0:
+        return main()
+    keys = prediction_log[0].keys()
+    with open(filename, 'w', newline='') as output_file:
+        dict_writer = csv.DictWriter(output_file, keys, delimiter=',')
+        dict_writer.writeheader()
+        dict_writer.writerows(prediction_log)
+
+    return flask.send_file(filename, as_attachment=True)
 
 
 if __name__ == '__main__':
