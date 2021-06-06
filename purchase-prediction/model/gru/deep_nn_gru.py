@@ -29,48 +29,17 @@ class GRUModel:
         in_layers = list()
         em_layers = list()
 
-        # for _ in range(4):
-        #     # add layer for price
-        #     in_layer_price = tf.keras.layers.Input(shape=(1, 1))
-        #     in_layers.append(in_layer_price)
-        #     em_layers.append(in_layer_price)
-        #
-        #     # add layer for discount
-        #     in_layer_discount = tf.keras.layers.Input(shape=(1, 1))
-        #     in_layers.append(in_layer_discount)
-        #     em_layers.append(in_layer_discount)
-        #
-        #     for j in range(2, len(X_train_enc)):
-        #         if j == 4:  # month
-        #             n_labels = 12
-        #         elif j == 5:  # day of the month
-        #             n_labels = 31
-        #         elif j == 6:  # day of the week
-        #             n_labels = 7
-        #         elif j == 7:  # hour
-        #             n_labels = 24
-        #         else:
-        #             # calculate the number of unique inputs
-        #             n_labels = len(np.unique(X_train_enc[j]))
-        #         # define input layer
-        #         in_layer = tf.keras.layers.Input(shape=(1,))
-        #         # define embedding layer
-        #         em_layer = tf.keras.layers.Embedding(n_labels, 10, mask_zero=mask_zero)(in_layer)
-        #         # store layers
-        #         in_layers.append(in_layer)
-        #         em_layers.append(em_layer)
-
         # add layer for price
-        in_layer_price = tf.keras.layers.Input(shape=(1, 1, 4))
-        # in_layers.append(in_layer_price)
+        in_layer_price = tf.keras.layers.Input(shape=(4, 1))
+        in_layers.append(in_layer_price)
         em_layers.append(in_layer_price)
 
         # add layer for discount
-        in_layer_discount = tf.keras.layers.Input(shape=(1, 1, 4))
-        # in_layers.append(in_layer_discount)
+        in_layer_discount = tf.keras.layers.Input(shape=(4, 1))
+        in_layers.append(in_layer_discount)
         em_layers.append(in_layer_discount)
 
-        in_layer = tf.keras.layers.Input(shape=(1, 8, 4))
+        # in_layer = tf.keras.layers.Input(shape=(1, 4, 1))
 
         for j in range(2, len(X_train_enc)):
             if j == 4:  # month
@@ -85,27 +54,27 @@ class GRUModel:
                 # calculate the number of unique inputs
                 n_labels = len(np.unique(X_train_enc[j]))
             # define input layer
-            # in_layer = tf.keras.layers.Input(shape=(1, 4))
+            in_layer = tf.keras.layers.Input(shape=(4,))
             # define embedding layer
             em_layer = tf.keras.layers.Embedding(n_labels, 10, input_length=4)(in_layer)
             # store layers
-            # in_layers.append(in_layer)
+            in_layers.append(in_layer)
             em_layers.append(em_layer)
 
-        return in_layer, em_layers
+        return in_layers, em_layers
 
     @staticmethod
     def build(in_layers, em_layers):
-        # concat all layers(price + embeddings)
-        # merge = tf.keras.layers.concatenate(axis=1, inputs=em_layers)
-        inputs = tf.keras.layers.Input(shape=(4, 8))
-        mask = tf.keras.layers.Masking(mask_value=0)(inputs)
-        dense = tf.compat.v1.keras.layers.GRU(248,
-                                              recurrent_regularizer=tf.keras.regularizers.L2(0.01),
-                                              activity_regularizer=tf.keras.regularizers.L2(0.01)
-                                              )(mask)
-        output = tf.keras.layers.Dense(1, activation='sigmoid')(dense)
-        model = tf.keras.Model(inputs=inputs, outputs=output)
+        merge = tf.keras.layers.concatenate(axis=-1, inputs=em_layers)
+
+        # inputs = tf.keras.layers.Input(shape=(4, 8))
+        mask = tf.keras.layers.Masking(mask_value=0)(merge)
+        gru = tf.compat.v1.keras.layers.GRU(248,
+                                            recurrent_regularizer=tf.keras.regularizers.L2(0.01),
+                                            activity_regularizer=tf.keras.regularizers.L2(0.01)
+                                            )(mask)
+        output = tf.keras.layers.Dense(1, activation='sigmoid')(gru)
+        model = tf.keras.Model(inputs=in_layers, outputs=output)
 
         plot_model(model, to_file='output/jpg/gru_model.jpg', show_shapes=True)
         # compile the keras model
