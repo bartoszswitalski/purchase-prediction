@@ -1,5 +1,9 @@
 flask
+flask-caching
 numpy
 tensorflow-cpu
 datetime
 gunicorn
+json-lines
+pandas
+pytz

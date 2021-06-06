@@ -22,55 +22,22 @@
 					<p>Welcome to our online store. <br />
                         We'll predict if you buy one of our products before you know it!</p>
                         <h2 id="form-hint">Input session data</h2>
-                        <form action="{{ url_for('main') }}" method="POST">
+                        <form action="{{ url_for('main', _anchor='result') }}" method="POST">
                             <fieldset>
                                 <label>
-                                    Price
-                                    <input name="price" type="number" min="0" step="0.01" required>
+                                    User ID
+                                    <input name="user_id" type="number" min="102" max="301" step="1" required>
                                 </label>
                                 <label>
-                                    Offered discount
-                                    <input name="offered_discount" type="number" min="0" max="100" required>
+                                    Product ID
+                                    <input name="product_id" id="product_input" type="number" min="1001" max="1319" step="1" required>
                                 </label>
-                                <label>
-                                    Category
-                                    <select name="category_path" required>
-                                        <option value="0">Gry i konsole;Gry komputerowe</option>
-                                        <option value="1">Gry i konsole;Gry na konsole;Gry PlayStation3</option>
-                                        <option value="2">Gry i konsole;Gry na konsole;Gry Xbox 360</option>
-                                        <option value="3">Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne</option>
-                                        <option value="4">Komputery;Monitory;Monitory LCD</option>
-                                        <option value="5">Komputery;Tablety i akcesoria;Tablety</option>
-                                        <option value="6">Sprzęt RTV;Audio;Słuchawki</option>
-                                        <option value="7">Sprzęt RTV;Przenośne audio i video;Odtwarzacze mp3 i mp4</option>
-                                        <option value="8">Sprzęt RTV;Video;Odtwarzacze DVD</option>
-                                        <option value="9">Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV</option>
-                                        <option value="10">Sprzęt RTV;Video;Telewizory i akcesoria;Okulary 3D</option>
-                                        <option value="11">Telefony i akcesoria;Akcesoria telefoniczne;Zestawy głośnomówiące</option>
-                                        <option value="12">Telefony i akcesoria;Akcesoria telefoniczne;Zestawy słuchawkowe</option>
-                                        <option value="13">Telefony i akcesoria;Telefony komórkowe</option>
-                                        <option value="14">Telefony i akcesoria;Telefony stacjonarne</option>
-                                    </select>
-                                </label>
-                                <label>
-                                    City
-                                    <select name="city" required>
-                                        <option value="0">Gdynia</option>
-                                        <option value="1">Konin</option>
-                                        <option value="2">Kutno</option>
-                                        <option value="3">Mielec</option>
-                                        <option value="4">Police</option>
-                                        <option value="5">Radom</option>
-                                        <option value="6">Szczecin</option>
-                                        <option value="7">Warszawa</option>
-                                    </select>
-                                </label>
-                                <label>
-                                    Date
-                                    <input name="date" type="datetime-local" required>
+                                <label class="percent">
+                                    Offered Discount
+                                    <input name="offered_discount" type="number" min="0" max="100" step="0.01" required>
                                 </label>
                                 <div class="submit-button">
-                                    <input class="primary" type="submit">
+                                    <input id="submit_button" class="primary" type="submit">
                                 </div>
                             </fieldset>
                         </form>
@@ -78,22 +45,21 @@
 				<div class="image phone"><div class="inner"><img src="../static/images/screen.jpg" alt="" /></div></div>
 			</header>
 
-		<!-- One -->
-			<section id="one" class="wrapper style2 special">
+		<!-- Result -->
+			<section id="result" class="wrapper style2 special">
 				<header class="major">
 					<h2>Result</h2>
-                    <div class="result">
-                        {% if result %}
-                            {% for variable, value in original_input.items() %}
-                                <b>{{ variable }}</b> : {{ value }}
-                            {% endfor %}
-                            <br>
-                            <br> Purchase prediction:
-                               <p style="font-size:50px">{{ result }}</p>
+                    {% if result %}
+                        <h2>{{ result }}</h2>
+
+                        {% if result >= 0.5 %}
+                            <b id="prediction-purchase">Purchase</b>
                         {% else %}
-                            Run a prediction before you can see the results.
+                            <b id="prediction-no-purchase">No Purchase</b>
                         {% endif %}
-                    </div>
+                    {% else %}
+                        Run a prediction before you can see the results.
+                    {% endif %}
                 </header>
 				<ul class="icons major">
 					<li><span class="icon solid fa-shopping-cart"></span></li>
@@ -109,30 +75,56 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                    <th>Price</th>
+                                    <th></th>
+                                    <th>User ID</th>
+                                    <th>Product ID</th>
+                                    <th>Offered Discount</th>
+                                    <th>Date</th>
+<!--                                    <th>Price</th>-->
+<!--                                    <th>Category</th>-->
+<!--                                    <th>City</th>-->
+                                    <th>Model</th>
+                                    <th>Prediction</th>
+                                    <th>Purchase</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Item One</td>
-                                    <td>Ante turpis integer aliquet porttitor.</td>
-                                    <td>29.99</td>
-                                </tr>
-                                <tr>
-                                    <td>Item Two</td>
-                                    <td>Vis ac commodo adipiscing arcu aliquet.</td>
-                                    <td>19.99</td>
-                                </tr>
+                                {% if prediction_log %}
+                                {% for prediction in prediction_log %}
+                                    <tr>
+                                        <td>{{ prediction.position }}.</td>
+                                        <td>{{ prediction.user_id }}</td>
+                                        <td>{{ prediction.product_id }}</td>
+                                        <td>{{ prediction.offered_discount }}%</td>
+                                        <td>{{ prediction.date }}</td>
+<!--                                        <td>{{ prediction.price }}</td>-->
+<!--                                        <td>{{ prediction.category_path }}</td>-->
+<!--                                        <td>{{ prediction.city }}</td>-->
+                                        <td>{{ prediction.model }}</td>
+                                        <td>{{ prediction.result }}</td>
+                                        <td><b>{{ prediction.is_buy }}</b></td>
+                                    </tr>
+                                {% endfor %}
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
             </header>
         </section>
 
-		<!-- Two -->
-			<section id="two" class="wrapper">
+        <!-- About The Model -->
+        <section id="about-model" class="wrapper style2 special">
+            <header class="major">
+                <h2>About The Model</h2>
+                <p>The model was created for the Machine Learning Engineering course at WUT.</p>
+            </header>
+            <ul class="icons">
+                <li><a href="https://github.com/bartoszswitalski/purchase-prediction" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+            </ul>
+        </section>
+
+		<!-- About Us -->
+			<section id="about-us" class="wrapper">
 				<div class="inner alt">
 					<section class="spotlight">
 						<div class="image"><img src="../static/images/logo_pw.png" alt="" /></div>
@@ -154,17 +146,6 @@
 						</ul>
 					</section>
 				</div>
-			</section>
-
-		<!-- Three -->
-			<section id="three" class="wrapper style2 special">
-				<header class="major">
-					<h2>About The Model</h2>
-					<p>The model was created for the Machine Learning Engineering course at WUT.</p>
-				</header>
-				<ul class="actions special">
-					<li><a href="https://github.com/bartoszswitalski/purchase-prediction" class="button">Learn More</a></li>
-				</ul>
 			</section>
 
 		<!-- Four -->
@@ -488,9 +469,6 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 
 		<!-- Footer -->
 			<footer id="footer">
-				<ul class="icons">
-					<li><a href="https://github.com/bartoszswitalski/purchase-prediction" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-				</ul>
                 <ul class="copyright">
                     <li>&copy; Warsaw University of Technology</li> <li>Design credits: <a href="http://html5up.net">HTML5 UP</a></li>
                 </ul>

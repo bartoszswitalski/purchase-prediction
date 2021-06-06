@@ -2046,6 +2046,16 @@ input, select, textarea {
 		text-overflow: ellipsis;
 	}
 
+	.percent input[type="number"] {
+		background-image: url("images/percent.ico");
+		background-size: 1.25rem;
+		background-repeat: no-repeat;
+		background-position: calc(100% - 1rem) center;
+		height: 2.75em;
+		padding-right: 2.75em;
+		text-overflow: ellipsis;
+	}
+
 		select option {
 			color: #828282;
 			background: #ffffff;
@@ -2670,7 +2680,7 @@ input, select, textarea {
 		}
 
 			ul.icons.labeled li {
-				display: block;
+				display: inline-block;
 				padding: 0;
 				margin: 1.5em 0 0 0;
 			}
@@ -2850,6 +2860,7 @@ input, select, textarea {
 		overflow-x: auto;
 		width: 90%;
 		margin: auto;
+		max-height: 20em;
 	}
 
 	table {
@@ -2873,6 +2884,9 @@ input, select, textarea {
 			font-weight: bold;
 			padding: 0 0.75em 0.75em 0.75em;
 			text-align: center;
+			position: sticky;
+			top: 0;
+			background: white;
 		}
 
 		table thead {
@@ -3674,6 +3688,16 @@ input, select, textarea {
 		min-height: 35em;
 	}
 
+		#prediction-purchase {
+			color: green;
+			font-size: 2.5em;
+		}
+
+		#prediction-no-purchase {
+			color: red;
+			font-size: 2.5em;
+		}
+
 		#header input[type=number]::-webkit-inner-spin-button {
 		  -webkit-appearance: none;
 		}
@@ -3691,6 +3715,10 @@ input, select, textarea {
 			display: flex;
 			justify-content: center;
 		}
+
+			#header .submit-button input[type="submit"] {
+				width: 8em;
+			}
 
 		#header input[type="submit"],
 		#header input[type="reset"],

@@ -1,0 +1,289 @@
+product_id;category_path;price;rating
+1001;"Telefony i akcesoria;Telefony stacjonarne";58.97;1.8
+1002;"Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne";2048.5;2.7
+1003;"Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne";7639.0;1.8
+1004;"Gry i konsole;Gry na konsole;Gry Xbox 360";49.99;4.6
+1005;"Gry i konsole;Gry na konsole;Gry Xbox 360";49.99;1.6
+1006;"Gry i konsole;Gry na konsole;Gry Xbox 360";59.9;1.6
+1007;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.99;0.1
+1008;"Gry i konsole;Gry na konsole;Gry Xbox 360";49.99;2.1
+1009;"Gry i konsole;Gry na konsole;Gry Xbox 360";69.0;4.1
+1010;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.99;4.4
+1011;"Gry i konsole;Gry na konsole;Gry Xbox 360";139.99;0.3
+1013;"Gry i konsole;Gry na konsole;Gry Xbox 360";129.99;4.9
+1014;"Gry i konsole;Gry na konsole;Gry Xbox 360";69.99;1.9
+1015;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.99;4.2
+1016;"Gry i konsole;Gry na konsole;Gry Xbox 360";69.0;0.1
+1017;"Komputery;Monitory;Monitory LCD";399.0;4.4
+1018;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.99;3.3
+1019;"Gry i konsole;Gry na konsole;Gry Xbox 360";109.99;3.3
+1020;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.0;4.9
+1022;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.99;1.9
+1023;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.99;4.8
+1024;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.99;3.1
+1025;"Komputery;Monitory;Monitory LCD";349.0;3.1
+1026;"Gry i konsole;Gry na konsole;Gry Xbox 360";139.99;2.4
+1027;"Gry i konsole;Gry na konsole;Gry Xbox 360";56.0;0.9
+1028;"Gry i konsole;Gry na konsole;Gry Xbox 360";39.0;2.1
+1029;"Gry i konsole;Gry na konsole;Gry Xbox 360";49.99;4.8
+1030;"Komputery;Monitory;Monitory LCD";739.0;1.2
+1031;"Gry i konsole;Gry na konsole;Gry Xbox 360";79.9;2.5
+1032;"Komputery;Monitory;Monitory LCD";688.78;4.7
+1033;"Komputery;Monitory;Monitory LCD";3029.0;2.2
+1034;"Komputery;Monitory;Monitory LCD";1079.0;0.4
+1035;"Telefony i akcesoria;Telefony komórkowe";2199.9;4.6
+1036;"Komputery;Monitory;Monitory LCD";639.0;2.9
+1037;"Komputery;Monitory;Monitory LCD";799.0;2.7
+1038;"Komputery;Monitory;Monitory LCD";1117.01;4.2
+1039;"Komputery;Monitory;Monitory LCD";269.0;0.6
+1040;"Gry i konsole;Gry na konsole;Gry PlayStation3";79.9;1.9
+1041;"Gry i konsole;Gry na konsole;Gry PlayStation3";79.9;1.7
+1042;"Gry i konsole;Gry na konsole;Gry PlayStation3";129.0;2.4
+1043;"Gry i konsole;Gry na konsole;Gry PlayStation3";109.0;0.4
+1044;"Gry i konsole;Gry na konsole;Gry PlayStation3";79.9;2.3
+1046;"Gry i konsole;Gry na konsole;Gry PlayStation3";61.18;3.1
+1048;"Gry i konsole;Gry komputerowe";63.49;3.0
+1049;"Gry i konsole;Gry komputerowe";17.9;1.3
+1050;"Gry i konsole;Gry komputerowe";37.9;1.0
+1051;"Gry i konsole;Gry komputerowe";76.9;4.4
+1052;"Gry i konsole;Gry komputerowe";78.9;1.2
+1053;"Gry i konsole;Gry komputerowe";42.9;1.3
+1054;"Gry i konsole;Gry komputerowe";32.99;4.3
+1056;"Gry i konsole;Gry komputerowe";29.99;2.5
+1057;"Gry i konsole;Gry komputerowe";19.99;1.7
+1058;"Gry i konsole;Gry komputerowe";24.99;1.3
+1060;"Gry i konsole;Gry komputerowe";34.99;3.0
+1061;"Gry i konsole;Gry komputerowe";10.99;1.3
+1062;"Gry i konsole;Gry komputerowe";36.99;0.7
+1063;"Gry i konsole;Gry komputerowe";75.99;2.4
+1064;"Komputery;Monitory;Monitory LCD";380.9;4.0
+1065;"Komputery;Monitory;Monitory LCD";1419.0;0.1
+1066;"Komputery;Monitory;Monitory LCD";2065.0;0.1
+1067;"Telefony i akcesoria;Telefony komórkowe";207.33;0.6
+1068;"Komputery;Monitory;Monitory LCD";999.0;1.6
+1069;"Komputery;Monitory;Monitory LCD";979.0;0.3
+1070;"Komputery;Monitory;Monitory LCD";609.0;3.5
+1071;"Komputery;Monitory;Monitory LCD";689.0;2.4
+1072;"Telefony i akcesoria;Akcesoria telefoniczne;Zestawy głośnomówiące";299.0;1.3
+1074;"Telefony i akcesoria;Akcesoria telefoniczne;Zestawy głośnomówiące";86.28;0.0
+1075;"Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne";1998.14;1.0
+1076;"Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne";2399.0;2.3
+1077;"Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne";3777.0;0.3
+1078;"Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne";5126.0;1.4
+1079;"Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne";4598.0;2.7
+1080;"Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne";5301.9;3.7
+1081;"Komputery;Drukarki i skanery;Biurowe urządzenia wielofunkcyjne";5259.0;3.9
+1082;"Gry i konsole;Gry komputerowe";34.99;3.7
+1083;"Gry i konsole;Gry komputerowe";8.99;0.3
+1084;"Gry i konsole;Gry na konsole;Gry PlayStation3";99.99;4.4
+1085;"Gry i konsole;Gry komputerowe";34.99;0.1
+1086;"Gry i konsole;Gry komputerowe";24.9;2.7
+1088;"Gry i konsole;Gry komputerowe";32.99;1.8
+1090;"Gry i konsole;Gry komputerowe";33.99;2.9
+1091;"Gry i konsole;Gry komputerowe";118.9;1.4
+1092;"Gry i konsole;Gry komputerowe";34.99;4.7
+1093;"Gry i konsole;Gry komputerowe";34.99;3.7
+1094;"Gry i konsole;Gry komputerowe";17.99;3.5
+1095;"Gry i konsole;Gry komputerowe";34.99;0.3
+1096;"Gry i konsole;Gry komputerowe";36.99;0.0
+1097;"Gry i konsole;Gry komputerowe";49.99;4.7
+1098;"Gry i konsole;Gry komputerowe";16.9;4.3
+1099;"Gry i konsole;Gry komputerowe";75.0;2.1
+1100;"Gry i konsole;Gry komputerowe";4.99;0.5
+1101;"Gry i konsole;Gry komputerowe";3.0;3.5
+1103;"Gry i konsole;Gry komputerowe";49.9;3.6
+1105;"Gry i konsole;Gry komputerowe";10.9;3.9
+1106;"Gry i konsole;Gry komputerowe";17.99;4.6
+1107;"Gry i konsole;Gry komputerowe";34.99;1.6
+1108;"Gry i konsole;Gry komputerowe";28.9;0.6
+1109;"Gry i konsole;Gry komputerowe";33.99;5.0
+1111;"Gry i konsole;Gry komputerowe";32.9;1.7
+1112;"Gry i konsole;Gry komputerowe";8.9;1.2
+1113;"Gry i konsole;Gry komputerowe";16.9;1.1
+1114;"Gry i konsole;Gry komputerowe";32.99;2.8
+1115;"Gry i konsole;Gry komputerowe";34.99;1.3
+1116;"Gry i konsole;Gry komputerowe";45.9;2.7
+1117;"Gry i konsole;Gry komputerowe";79.99;1.1
+1118;"Gry i konsole;Gry komputerowe";14.9;4.3
+1119;"Gry i konsole;Gry komputerowe";78.0;2.6
+1121;"Gry i konsole;Gry komputerowe";29.99;5.0
+1122;"Gry i konsole;Gry komputerowe";73.0;3.4
+1123;"Gry i konsole;Gry komputerowe";132.9;1.3
+1124;"Gry i konsole;Gry komputerowe";94.0;2.6
+1125;"Gry i konsole;Gry komputerowe";69.9;0.1
+1126;"Gry i konsole;Gry komputerowe";99.99;1.4
+1127;"Gry i konsole;Gry komputerowe";41.0;0.6
+1128;"Gry i konsole;Gry na konsole;Gry Xbox 360";14.99;1.4
+1129;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.99;0.9
+1130;"Gry i konsole;Gry na konsole;Gry Xbox 360";49.99;0.8
+1131;"Gry i konsole;Gry komputerowe";34.99;3.0
+1132;"Gry i konsole;Gry komputerowe";4.99;3.6
+1133;"Gry i konsole;Gry komputerowe";19.99;1.5
+1134;"Gry i konsole;Gry komputerowe";38.99;0.8
+1135;"Gry i konsole;Gry komputerowe";18.9;1.6
+1136;"Gry i konsole;Gry komputerowe";199.9;1.5
+1137;"Gry i konsole;Gry komputerowe";11.9;4.7
+1138;"Gry i konsole;Gry komputerowe";47.79;0.4
+1139;"Gry i konsole;Gry komputerowe";71.99;3.3
+1140;"Gry i konsole;Gry komputerowe";12.99;4.3
+1141;"Gry i konsole;Gry komputerowe";1.0;2.3
+1142;"Gry i konsole;Gry komputerowe";23.9;2.1
+1143;"Gry i konsole;Gry komputerowe";25.49;3.1
+1144;"Gry i konsole;Gry komputerowe";1.99;3.9
+1145;"Gry i konsole;Gry komputerowe";31.9;3.5
+1146;"Gry i konsole;Gry komputerowe";24.9;2.9
+1147;"Gry i konsole;Gry komputerowe";19.99;4.4
+1148;"Gry i konsole;Gry komputerowe";169.0;2.7
+1149;"Gry i konsole;Gry komputerowe";56.9;4.1
+1150;"Gry i konsole;Gry komputerowe";25.9;3.0
+1151;"Gry i konsole;Gry komputerowe";11.9;3.1
+1152;"Gry i konsole;Gry komputerowe";32.99;3.2
+1153;"Gry i konsole;Gry komputerowe";37.91;2.4
+1154;"Gry i konsole;Gry komputerowe";40.9;2.4
+1155;"Gry i konsole;Gry komputerowe";31.9;3.3
+1156;"Gry i konsole;Gry komputerowe";4.99;2.8
+1157;"Gry i konsole;Gry komputerowe";34.99;3.9
+1158;"Gry i konsole;Gry komputerowe";36.9;3.6
+1160;"Gry i konsole;Gry komputerowe";11.9;3.4
+1161;"Gry i konsole;Gry komputerowe";18.9;0.9
+1162;"Gry i konsole;Gry komputerowe";30.9;4.8
+1163;"Gry i konsole;Gry komputerowe";17.99;3.1
+1164;"Gry i konsole;Gry komputerowe";112.99;4.8
+1165;"Gry i konsole;Gry komputerowe";19.99;1.3
+1166;"Gry i konsole;Gry komputerowe";96.99;3.2
+1167;"Gry i konsole;Gry komputerowe";91.99;2.5
+1168;"Gry i konsole;Gry komputerowe";24.99;0.3
+1169;"Gry i konsole;Gry komputerowe";9.99;2.9
+1170;"Gry i konsole;Gry komputerowe";4.99;1.6
+1171;"Gry i konsole;Gry komputerowe";142.99;1.8
+1172;"Gry i konsole;Gry komputerowe";31.9;2.0
+1173;"Gry i konsole;Gry komputerowe";34.9;4.7
+1175;"Gry i konsole;Gry komputerowe";122.99;0.4
+1176;"Gry i konsole;Gry komputerowe";27.9;4.0
+1177;"Gry i konsole;Gry komputerowe";34.99;2.9
+1178;"Gry i konsole;Gry komputerowe";9.99;0.4
+1179;"Gry i konsole;Gry komputerowe";14.99;2.6
+1180;"Gry i konsole;Gry komputerowe";24.9;1.5
+1182;"Gry i konsole;Gry komputerowe";36.9;2.4
+1183;"Gry i konsole;Gry komputerowe";40.9;3.8
+1184;"Gry i konsole;Gry komputerowe";4.99;0.4
+1185;"Gry i konsole;Gry komputerowe";12.9;4.8
+1187;"Gry i konsole;Gry komputerowe";13.0;1.3
+1188;"Gry i konsole;Gry komputerowe";55.0;2.6
+1189;"Gry i konsole;Gry komputerowe";17.9;0.2
+1190;"Gry i konsole;Gry komputerowe";70.9;2.4
+1191;"Gry i konsole;Gry komputerowe";19.99;4.2
+1192;"Gry i konsole;Gry komputerowe";76.9;1.9
+1193;"Gry i konsole;Gry komputerowe";1.0;4.6
+1194;"Gry i konsole;Gry komputerowe";34.99;1.4
+1195;"Gry i konsole;Gry komputerowe";38.9;1.7
+1196;"Gry i konsole;Gry komputerowe";46.99;3.2
+1197;"Gry i konsole;Gry komputerowe";15.99;0.1
+1198;"Gry i konsole;Gry komputerowe";16.9;2.8
+1199;"Gry i konsole;Gry komputerowe";63.9;1.8
+1200;"Gry i konsole;Gry komputerowe";23.9;1.5
+1201;"Telefony i akcesoria;Akcesoria telefoniczne;Zestawy głośnomówiące";327.47;2.7
+1202;"Gry i konsole;Gry komputerowe";135.9;3.7
+1203;"Gry i konsole;Gry komputerowe";29.99;2.1
+1204;"Gry i konsole;Gry komputerowe";19.99;2.6
+1205;"Gry i konsole;Gry komputerowe";23.9;0.3
+1206;"Gry i konsole;Gry komputerowe";3.59;3.1
+1208;"Gry i konsole;Gry komputerowe";13.79;2.1
+1209;"Gry i konsole;Gry komputerowe";15.47;1.2
+1211;"Gry i konsole;Gry komputerowe";27.9;3.1
+1212;"Gry i konsole;Gry komputerowe";102.9;3.9
+1213;"Gry i konsole;Gry komputerowe";5.0;3.5
+1214;"Gry i konsole;Gry komputerowe";18.99;2.1
+1215;"Gry i konsole;Gry komputerowe";34.9;0.6
+1217;"Gry i konsole;Gry komputerowe";19.9;2.1
+1219;"Gry i konsole;Gry komputerowe";34.99;0.9
+1220;"Gry i konsole;Gry komputerowe";24.9;4.3
+1222;"Telefony i akcesoria;Akcesoria telefoniczne;Zestawy głośnomówiące";245.0;2.2
+1223;"Gry i konsole;Gry komputerowe";32.99;3.4
+1225;"Gry i konsole;Gry komputerowe";30.0;3.3
+1226;"Gry i konsole;Gry komputerowe";41.9;0.6
+1227;"Gry i konsole;Gry komputerowe";24.99;2.3
+1228;"Gry i konsole;Gry komputerowe";24.99;4.8
+1229;"Gry i konsole;Gry komputerowe";35.0;1.7
+1230;"Gry i konsole;Gry komputerowe";47.7;3.6
+1231;"Gry i konsole;Gry komputerowe";18.24;3.6
+1232;"Gry i konsole;Gry komputerowe";18.24;0.9
+1234;"Sprzęt RTV;Video;Odtwarzacze DVD";193.0;0.7
+1235;"Gry i konsole;Gry komputerowe";34.99;3.6
+1236;"Gry i konsole;Gry komputerowe";31.99;1.9
+1237;"Gry i konsole;Gry komputerowe";35.99;0.4
+1238;"Gry i konsole;Gry komputerowe";34.99;0.4
+1239;"Gry i konsole;Gry komputerowe";20.9;0.2
+1240;"Gry i konsole;Gry komputerowe";19.9;2.8
+1241;"Gry i konsole;Gry komputerowe";27.99;0.7
+1242;"Gry i konsole;Gry komputerowe";62.48;4.9
+1244;"Gry i konsole;Gry komputerowe";9.99;1.8
+1245;"Gry i konsole;Gry komputerowe";34.99;2.4
+1246;"Gry i konsole;Gry komputerowe";33.99;1.1
+1247;"Gry i konsole;Gry komputerowe";63.99;3.1
+1248;"Gry i konsole;Gry komputerowe";40.9;0.5
+1249;"Gry i konsole;Gry komputerowe";39.99;0.9
+1251;"Gry i konsole;Gry komputerowe";15.9;4.4
+1252;"Gry i konsole;Gry komputerowe";12.9;1.9
+1253;"Gry i konsole;Gry komputerowe";39.9;4.5
+1254;"Gry i konsole;Gry komputerowe";55.9;3.5
+1255;"Gry i konsole;Gry komputerowe";32.9;0.5
+1256;"Gry i konsole;Gry komputerowe";36.99;1.3
+1258;"Gry i konsole;Gry komputerowe";13.99;4.2
+1259;"Gry i konsole;Gry komputerowe";73.9;1.3
+1260;"Gry i konsole;Gry komputerowe";74.9;2.7
+1261;"Gry i konsole;Gry komputerowe";9.99;1.6
+1262;"Gry i konsole;Gry komputerowe";14.99;1.0
+1264;"Gry i konsole;Gry komputerowe";11.9;2.9
+1265;"Gry i konsole;Gry komputerowe";26.99;3.8
+1266;"Gry i konsole;Gry komputerowe";47.9;4.8
+1267;"Gry i konsole;Gry komputerowe";23.9;3.3
+1268;"Gry i konsole;Gry komputerowe";25.9;2.5
+1269;"Gry i konsole;Gry komputerowe";19.99;4.8
+1270;"Gry i konsole;Gry komputerowe";7.9;1.2
+1271;"Gry i konsole;Gry komputerowe";189.0;3.4
+1272;"Gry i konsole;Gry komputerowe";1.0;3.3
+1273;"Gry i konsole;Gry komputerowe";29.9;3.1
+1274;"Gry i konsole;Gry komputerowe";27.9;3.0
+1275;"Gry i konsole;Gry komputerowe";54.9;2.2
+1276;"Komputery;Tablety i akcesoria;Tablety";1816.97;0.2
+1277;"Komputery;Tablety i akcesoria;Tablety";2317.02;2.7
+1278;"Sprzęt RTV;Przenośne audio i video;Odtwarzacze mp3 i mp4";78.9;0.5
+1279;"Gry i konsole;Gry na konsole;Gry Xbox 360";49.99;3.7
+1280;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.0;0.9
+1282;"Gry i konsole;Gry na konsole;Gry Xbox 360";89.99;3.1
+1283;"Sprzęt RTV;Video;Telewizory i akcesoria;Okulary 3D";99.99;0.2
+1284;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";49.9;3.2
+1285;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";82.99;1.4
+1286;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";59.99;3.9
+1287;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";129.0;4.5
+1288;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";119.0;1.7
+1289;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";129.0;4.4
+1290;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";169.0;4.6
+1291;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";168.79;1.1
+1292;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";189.0;0.1
+1293;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";44.99;2.9
+1294;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";112.28;1.9
+1295;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";69.99;3.2
+1296;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";89.99;1.7
+1297;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";119.0;3.8
+1298;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";219.0;0.1
+1299;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";109.0;4.0
+1300;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";169.0;1.3
+1301;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";149.0;0.7
+1302;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";135.0;0.9
+1303;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";59.99;1.6
+1304;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";29.99;0.7
+1305;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";111.99;2.1
+1306;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";79.99;2.2
+1308;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";99.99;1.3
+1309;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";94.53;4.4
+1310;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";79.99;2.8
+1312;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";99.9;0.8
+1313;"Sprzęt RTV;Video;Telewizory i akcesoria;Anteny RTV";103.0;2.6
+1314;"Gry i konsole;Gry na konsole;Gry Xbox 360";49.99;4.1
+1315;"Telefony i akcesoria;Akcesoria telefoniczne;Zestawy słuchawkowe";54.99;2.3
+1316;"Telefony i akcesoria;Akcesoria telefoniczne;Zestawy słuchawkowe";249.0;4.9
+1317;"Telefony i akcesoria;Akcesoria telefoniczne;Zestawy słuchawkowe";1303.96;3.6
+1318;"Sprzęt RTV;Audio;Słuchawki";553.0;2.2
+1319;"Telefony i akcesoria;Akcesoria telefoniczne;Zestawy słuchawkowe";14.99;1.3
