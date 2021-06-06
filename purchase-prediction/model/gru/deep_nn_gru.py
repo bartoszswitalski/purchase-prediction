@@ -25,7 +25,7 @@ class GRUModel:
         return X_train, X_test, y_train, y_test
 
     @staticmethod
-    def get_input_and_embedding_layers(X_train_enc, mask_zero=False):
+    def get_input_and_embedding_layers(X_train_enc):
         in_layers = list()
         em_layers = list()
 
@@ -66,8 +66,6 @@ class GRUModel:
     @staticmethod
     def build(in_layers, em_layers):
         merge = tf.keras.layers.concatenate(axis=-1, inputs=em_layers)
-
-        # inputs = tf.keras.layers.Input(shape=(4, 8))
         mask = tf.keras.layers.Masking(mask_value=0)(merge)
         gru = tf.compat.v1.keras.layers.GRU(248,
                                             recurrent_regularizer=tf.keras.regularizers.L2(0.01),
@@ -87,7 +85,7 @@ class GRUModel:
     @staticmethod
     def fit(model, X_train, X_test, y_train, y_test):
         # fit the keras model on the dataset
-        model.fit(X_train, y_train, epochs=50, batch_size=32, verbose=2)
+        model.fit(X_train, y_train, epochs=100, batch_size=16, verbose=1)
 
         # evaluate the keras model
         _, accuracy = model.evaluate(X_test, y_test, verbose=0)

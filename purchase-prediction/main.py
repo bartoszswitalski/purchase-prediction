@@ -1,12 +1,3 @@
-"""
-    Name: main.py
-    Purpose:
-
-    @author Bartosz Świtalski, Piotr Frątczak
-
-    Warsaw University of Technology
-    Faculty of Electronics and Information Technology
-"""
 from preprocess.check_users import users_check
 from preprocess.check_products import products_check
 from preprocess.check_sessions import sessions_check
@@ -54,58 +45,35 @@ if __name__ == '__main__':
     # # tune parameters
     # DeepModel.tune(X_train_enc, X_test_enc, y_train_enc, y_test_enc)
 
-    # """
-    #     uncomment to build sequence model
-    # """
+    """
+        uncomment to build sequence model
+    """
     X_train_enc, X_test_enc, y_train_enc, y_test_enc = DeepModel.get_dataset()
     # get train and test sets
     X_train, X_test, y_train, y_test = GRUModel.get_dataset()
-    print('\n---------\n')
-    print(type(X_train))
-    print(X_train.shape)
-    print(X_train)
 
-    # k = 0
-    # X_train = X_train.tolist()
-    # for i in range(len(X_train)):
-    #     X_train[i] = np.asarray(X_train[i])
-    #     sequenced_attributes = list()
-    #     for j in range(8):
-    #         sequenced_attributes.append(X_train[i][:, j])
-    #     sequenced_attributes = np.asarray(sequenced_attributes)
-    #     X_train[i] = sequenced_attributes
+    x1 = X_train[:, :, 0]
+    x2 = X_train[:, :, 1]
+    x3 = X_train[:, :, 2]
+    x4 = X_train[:, :, 3]
+    x5 = X_train[:, :, 4]
+    x6 = X_train[:, :, 5]
+    x7 = X_train[:, :, 6]
+    x8 = X_train[:, :, 7]
 
-    # print('\n------')
-    # print(X_train[0])
-    # print('\n------')
-
-    # print('\n------')
-    # print(X_train_new[0][0])
-    # print('\n------')
-
-    # print(type(X_train[0]))
-    # print(X_train[0].shape)
-    # print(X_train[0])
-
-    y_train = y_train.tolist()
-    for i in range(len(y_train)):
-        for _ in range(3):
-            y_train[i] = np.append(y_train[i], y_train[i][0])
-        y_train[i] = np.asarray(y_train[i])
-        y_train[i] = y_train[i].reshape(4, 1)
-
-    print(len(X_train))
-    print(len(y_train))
-
-    print(X_train[0])
-    print(y_train[0])
-    print(type(X_train[0]))
-    print(type(y_train[0]))
-    print('\n---------\n')
+    xt1 = X_test[:, :, 0]
+    xt2 = X_test[:, :, 1]
+    xt3 = X_test[:, :, 2]
+    xt4 = X_test[:, :, 3]
+    xt5 = X_test[:, :, 4]
+    xt6 = X_test[:, :, 5]
+    xt7 = X_test[:, :, 6]
+    xt8 = X_test[:, :, 7]
 
     # # generate input and embedding layers
-    in_layers, em_layers = GRUModel.get_input_and_embedding_layers(X_train_enc, False)
+    in_layers, em_layers = GRUModel.get_input_and_embedding_layers(X_train_enc)
     # build and compile model
     model = GRUModel.build(in_layers, em_layers)
     # # fit model
+    # GRUModel.fit(model, [x1, x2, x3, x4, x5, x6, x7, x8], [xt1, xt2, xt3, xt4, xt5, xt6, xt7, xt8], y_train, y_test)
     GRUModel.fit(model, X_train_enc, X_test_enc, y_train_enc, y_test_enc)
