@@ -48,29 +48,38 @@ class DeepModel:
         em_layers = list()
 
         # add layer for price
-        in_layer_price = tf.keras.layers.Input(shape=(1, 1))
+        in_layer_price = tf.keras.layers.Input(shape=(1, 1), name='price')
         in_layers.append(in_layer_price)
         em_layers.append(in_layer_price)
 
         # add layer for discount
-        in_layer_discount = tf.keras.layers.Input(shape=(1, 1))
+        in_layer_discount = tf.keras.layers.Input(shape=(1, 1), name='discount')
         in_layers.append(in_layer_discount)
         em_layers.append(in_layer_discount)
 
         for i in range(2, len(X_train_enc)):
             if i == 4:  # month
+                name = 'month'
                 n_labels = 12
             elif i == 5:  # day of the month
+                name = 'day'
                 n_labels = 31
             elif i == 6:  # day of the week
+                name = 'week_day'
                 n_labels = 7
             elif i == 7:  # hour
+                name = 'hour'
                 n_labels = 24
             else:
                 # calculate the number of unique inputs
                 n_labels = len(np.unique(X_train_enc[i]))
+
+            if i == 2:
+                name = 'category'
+            elif i == 3:
+                name = 'city'
             # define input layer
-            in_layer = tf.keras.layers.Input(shape=(1,))
+            in_layer = tf.keras.layers.Input(shape=(1,), name=name)
             # define embedding layer
             em_layer = tf.keras.layers.Embedding(n_labels, 10)(in_layer)
             # store layers
@@ -106,7 +115,7 @@ class DeepModel:
         model.compile(loss='binary_crossentropy', optimizer=opt, metrics=['accuracy'])
 
         # plot graph
-        plot_model(model, to_file='output/jpg/simple_model.jpg', show_shapes=True)
+        plot_model(model, to_file='output/jpg/simple_model.jpg', show_shapes=False)
 
         return model
 

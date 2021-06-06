@@ -36,7 +36,6 @@ if __name__ == '__main__':
     # DeepModel.fit(model, X_train_enc, X_test_enc, y_train_enc, y_test_enc)
     # # test prediction
     # DeepModel.test_predict(model)
-
     """
         uncomment to tune parameters 
     """
@@ -51,29 +50,11 @@ if __name__ == '__main__':
     X_train_enc, X_test_enc, y_train_enc, y_test_enc = DeepModel.get_dataset()
     # get train and test sets
     X_train, X_test, y_train, y_test = GRUModel.get_dataset()
-
-    x1 = X_train[:, :, 0]
-    x2 = X_train[:, :, 1]
-    x3 = X_train[:, :, 2]
-    x4 = X_train[:, :, 3]
-    x5 = X_train[:, :, 4]
-    x6 = X_train[:, :, 5]
-    x7 = X_train[:, :, 6]
-    x8 = X_train[:, :, 7]
-
-    xt1 = X_test[:, :, 0]
-    xt2 = X_test[:, :, 1]
-    xt3 = X_test[:, :, 2]
-    xt4 = X_test[:, :, 3]
-    xt5 = X_test[:, :, 4]
-    xt6 = X_test[:, :, 5]
-    xt7 = X_test[:, :, 6]
-    xt8 = X_test[:, :, 7]
-
     # # generate input and embedding layers
     in_layers, em_layers = GRUModel.get_input_and_embedding_layers(X_train_enc)
     # build and compile model
     model = GRUModel.build(in_layers, em_layers)
     # # fit model
-    # GRUModel.fit(model, [x1, x2, x3, x4, x5, x6, x7, x8], [xt1, xt2, xt3, xt4, xt5, xt6, xt7, xt8], y_train, y_test)
+    # GRUModel.fit(model, X_train, X_test, y_train, y_test)
     GRUModel.fit(model, X_train_enc, X_test_enc, y_train_enc, y_test_enc)
+    GRUModel.test_predict(model)
